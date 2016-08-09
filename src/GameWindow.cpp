@@ -1,13 +1,7 @@
 #include "GameEngine/GameWindow.h"
 
-int GameWindow::windowCount;
-
 GameWindow::GameWindow(int w, int h, std::string title){
-	if(0 == GameWindow::windowCount){
-		SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
-		
-	}
-
+	
 	window = SDL_CreateWindow(
         		title.c_str(),                  
         		SDL_WINDOWPOS_CENTERED,           
@@ -24,31 +18,20 @@ GameWindow::GameWindow(int w, int h, std::string title){
     	}	
 	
 	glContext = SDL_GL_CreateContext(window);
-
-	GameWindow::windowCount++;
-
-	bool quit = false;
-    	while(!quit){
-		SDL_Event event;
-		while(SDL_PollEvent(&event)){
-			 //User requests quit
-                	if( event.type == SDL_QUIT )
-                	{
-                	    quit = true;
-               		}
-		}
-
-		glClearColor(0,0,1,1);
-		glClear(GL_COLOR_BUFFER_BIT);
-		SDL_GL_SwapWindow(window);
-	}
-
 }
 
 GameWindow::~GameWindow(){
+	SDL_GL_DeleteContext(glContext);
 	SDL_DestroyWindow(window);
 }
 
+void GameWindow::refresh(){
+	
+	SDL_GL_SwapWindow(window);
+	glClearColor(0,0,1,1);
+	glClear(GL_COLOR_BUFFER_BIT);
+	
+}
 
 int GameWindow::getWindowWidth(){
 	int w;

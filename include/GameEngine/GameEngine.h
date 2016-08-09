@@ -1,6 +1,9 @@
 #pragma once
 
+#include <iostream>
 #include "SDL2/SDL.h"
+#include "GL/glew.h"
+#include "GameEngine/Renderer.h"
 #include "GameEngine/GameWindow.h"
 
 class GameEngine{
@@ -13,9 +16,9 @@ public:
 
 private:
 	GameEngine();
-	int gameCounter;
 
+	Renderer* renderer;
 	GameWindow* window;
 
-static GameEngine* gameEngineInstance;
+	static GameEngine* gameEngineInstance;
 };

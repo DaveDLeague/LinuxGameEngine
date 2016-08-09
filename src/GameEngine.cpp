@@ -4,18 +4,31 @@
 GameEngine* GameEngine::gameEngineInstance;
 
 GameEngine::GameEngine() {
-	SDL_Init(SDL_INIT_EVERYTHING);
-	gameCounter = 0;
-	window = NULL;
+	if(0 != SDL_Init(SDL_INIT_EVERYTHING)){
+		std::cout << "Error initializing SDL/n";
+	}
+
+	window = new GameWindow(900, 700, "PONG");
+
+	GLenum err = glewInit();
+	if (GLEW_OK != err)
+	{
+  		fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
+	}
+
+	fprintf(stdout, "Status: Using GLEW %s\n", glewGetString(GLEW_VERSION));
+	
+	renderer = new Renderer();
 }
 
 GameEngine::~GameEngine() {
 	delete window;
+	delete renderer;
 	delete gameEngineInstance;
+	SDL_Quit();
 }
 
 GameEngine* GameEngine::getInstance() {
-
 	if (!gameEngineInstance) {
 		gameEngineInstance = new GameEngine();
 	}
@@ -23,5 +36,21 @@ GameEngine* GameEngine::getInstance() {
 }
 
 void GameEngine::startGame() {
-	window = new GameWindow(900, 700, "PONG");
+	
+
+	bool quit = false;
+    	while(!quit){
+		SDL_Event event;
+		while(SDL_PollEvent(&event)){
+                	if( event.type == SDL_QUIT ){
+                		quit = true;
+               		}
+			if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE) {
+				quit = true;
+			}
+
+		}
+		window->refresh();
+		renderer->refresh();
+	}
 }

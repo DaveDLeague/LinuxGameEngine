@@ -9,11 +9,11 @@ public:
 	GameWindow(int w, int h, std::string title);
 	virtual ~GameWindow();
 	
+	void refresh();
 	int getWindowWidth();
 	int getWindowHeight();
 
 private:
 	SDL_Window* window;
 	SDL_GLContext glContext;
-	static int windowCount;
 };
