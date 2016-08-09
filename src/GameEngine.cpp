@@ -1,5 +1,6 @@
 
 #include "GameEngine/GameEngine.h"
+#include "GameEngine/GameObject.h"
 
 GameEngine* GameEngine::gameEngineInstance;
 
@@ -37,7 +38,8 @@ GameEngine* GameEngine::getInstance() {
 
 void GameEngine::startGame() {
 	
-
+	GameObject o(50, 50, 200, 200);
+	GameObject g(50, 300, 100, 240);
 	bool quit = false;
     	while(!quit){
 		SDL_Event event;
@@ -51,6 +53,10 @@ void GameEngine::startGame() {
 
 		}
 		window->refresh();
-		renderer->refresh();
+		//renderer->refresh();
+		o.draw(renderer);
+		g.draw(renderer);
+		o.update();
+		g.update();
 	}
 }

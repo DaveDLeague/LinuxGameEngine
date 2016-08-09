@@ -10,8 +10,8 @@ const GLfloat vertices[18] = {
 			    };
 
 Renderer::Renderer(){
-	shader = new Shader("/home/dave/Desktop/linuxgameengine/shaders/basic_vertex.vs", 
-	"/home/dave/Desktop/linuxgameengine/shaders/basic_fragment.fs");
+	shader = new Shader("../LinuxGameEngine/shaders/basic_vertex.vs", 
+	"../LinuxGameEngine/shaders/basic_fragment.fs");
 
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
@@ -81,5 +81,22 @@ void Renderer::setColor(float r, float g, float b){
 }
 
 void Renderer::fillRect(int x, int y, int w, int h){
+	float newX = (((float)x / (float)width) * 2.0) - 1.0;
+	float newY = (((float)y / (float)height) * 2.0) - 1.0;
 
+	float scalex = (float)w / (float)width;
+	float scaley = (float)h / (float)height;
+
+	glm::mat4 transform;
+	transform = glm::translate(transform, glm::vec3(newX, newY, 0.0));
+	transform = glm::scale(transform, glm::vec3(scalex, scaley, 0.0));
+
+	GLint uniTrans = glGetUniformLocation(shader->getProgram(),
+			"transformation");
+	glUniformMatrix4fv(uniTrans, 1, GL_FALSE, glm::value_ptr(transform));
+
+	glUseProgram(shader->getProgram());
+	glBindVertexArray(VAO);
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+	glBindVertexArray(0);
 }
