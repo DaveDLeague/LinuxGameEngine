@@ -114,7 +114,7 @@ void Renderer::initCrVerts(){
 void Renderer::calcScale(int w, int h){
 	float scalex = (float)w / (float)window->getWindowWidth();
 	float scaley = (float)h / (float)window->getWindowHeight();
-	transform = glm::scale(transform, glm::vec3(scalex, scaley, 0.0));
+	transform = glm::scale(transform, glm::vec3(scalex * 2, scaley * 2, 0.0));
 }
 
 void Renderer::calcTranslate(int x, int y){

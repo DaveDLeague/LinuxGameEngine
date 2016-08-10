@@ -16,26 +16,12 @@ GameObject::~GameObject(){
 
 }
 
-int speed = 1;
 void GameObject::update(){
-	if(x >= 1000 || x <= 0){
-		speed = -speed;
-	} 
-
-	if(y >= 1000 || y <= 0){
-		speed = -speed;
-	} 
-
-	const Uint8* keys = GameEngine::getInstance()->getKeyState();
-
-	if(keys[GameEngine::UP_KEY]){
-		y += speed;
-	}
+	
 }
 
 void GameObject::draw(Renderer* ren){
-	ren->setColor(r, g, b);
-	ren->fillOval(x, y, w, h);
+
 }
 
 void GameObject::setColor(int r, int g, int b){
