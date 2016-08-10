@@ -10,6 +10,7 @@ public:
 	virtual ~GameWindow();
 	
 	void refresh();
+	void setBackgroundColor(float r, float g, float b);
 	int getWindowWidth();
 	int getWindowHeight();
 

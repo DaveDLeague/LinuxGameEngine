@@ -10,6 +10,7 @@ GameEngine::GameEngine() {
 	}
 
 	window = new GameWindow(900, 700, "PONG");
+	window->setBackgroundColor(0.0f, 1.0f, 0.0f);
 
 	GLenum err = glewInit();
 	if (GLEW_OK != err)
@@ -19,7 +20,7 @@ GameEngine::GameEngine() {
 
 	fprintf(stdout, "Status: Using GLEW %s\n", glewGetString(GLEW_VERSION));
 	
-	renderer = new Renderer();
+	renderer = new Renderer(window);
 }
 
 GameEngine::~GameEngine() {

@@ -28,9 +28,13 @@ GameWindow::~GameWindow(){
 void GameWindow::refresh(){
 	
 	SDL_GL_SwapWindow(window);
-	glClearColor(0,0,1,1);
+	
 	glClear(GL_COLOR_BUFFER_BIT);
 	
+}
+
+void GameWindow::setBackgroundColor(float r, float g, float b){
+	glClearColor(r, g, b, 1.0);
 }
 
 int GameWindow::getWindowWidth(){

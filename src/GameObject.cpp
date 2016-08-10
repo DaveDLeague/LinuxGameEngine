@@ -22,7 +22,7 @@ void GameObject::update(){
 
 void GameObject::draw(Renderer* ren){
 	ren->setColor(r, g, b);
-	ren->fillRect(x, y, w, h);
+	ren->fillOval(x, y, w, h);
 }
 
 void GameObject::setColor(int r, int g, int b){
