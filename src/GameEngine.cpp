@@ -2,6 +2,11 @@
 #include "GameEngine/GameEngine.h"
 #include "GameEngine/GameObject.h"
 
+const int GameEngine::UP_KEY = SDL_SCANCODE_UP;
+const int GameEngine::DOWN_KEY = SDL_SCANCODE_DOWN;
+const int GameEngine::LEFT_KEY = SDL_SCANCODE_LEFT;
+const int GameEngine::RIGHT_KEY = SDL_SCANCODE_RIGHT;
+
 GameEngine* GameEngine::gameEngineInstance;
 
 GameEngine::GameEngine() {
@@ -42,22 +47,32 @@ void GameEngine::startGame() {
 	GameObject o(50, 50, 200, 200);
 	GameObject g(50, 300, 100, 240);
 	bool quit = false;
+	 
+	SDL_Event event;
+
     	while(!quit){
-		SDL_Event event;
+		SDL_PumpEvents();
+		const Uint8* keys = SDL_GetKeyboardState(NULL);
+
+		if(keys[SDL_SCANCODE_ESCAPE]){
+			quit = true;
+		}		
+
 		while(SDL_PollEvent(&event)){
                 	if( event.type == SDL_QUIT ){
                 		quit = true;
                		}
-			if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE) {
-				quit = true;
-			}
 
 		}
 		window->refresh();
-		//renderer->refresh();
+
 		o.draw(renderer);
 		g.draw(renderer);
 		o.update();
 		g.update();
 	}
+}
+
+const Uint8* GameEngine::getKeyState(){
+	return SDL_GetKeyboardState(NULL);
 }

@@ -13,6 +13,13 @@ public:
 	static GameEngine* getInstance();
 	void startGame();
 	void stopGame();
+	
+	const Uint8* getKeyState();
+
+	const static int UP_KEY;
+	const static int DOWN_KEY;
+	const static int LEFT_KEY;
+	const static int RIGHT_KEY;
 
 private:
 	GameEngine();
@@ -21,4 +28,5 @@ private:
 	GameWindow* window;
 
 	static GameEngine* gameEngineInstance;
+	Uint8* keyState;	
 };

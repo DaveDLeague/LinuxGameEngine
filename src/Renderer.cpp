@@ -49,6 +49,8 @@ Renderer::Renderer(GameWindow* win){
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0); 
 	glBindVertexArray(0); 
+
+	transUniform = glGetUniformLocation(shader->getProgram(), "transformation");
 }
 
 Renderer::~Renderer(){
@@ -70,19 +72,11 @@ void Renderer::setColor(float r, float g, float b){
 }
 
 void Renderer::fillRect(int x, int y, int w, int h){
-	float newX = (((float)x / (float)window->getWindowWidth()) * 2.0) - 1.0;
-	float newY = (((float)y / (float)window->getWindowHeight()) * 2.0) - 1.0;
+	transform = glm::mat4();
+	calcTranslate(x, y);
+	calcScale(w, h);
 
-	float scalex = (float)w / (float)window->getWindowWidth();
-	float scaley = (float)h / (float)window->getWindowHeight();
-
-	glm::mat4 transform;
-	transform = glm::translate(transform, glm::vec3(newX, newY, 0.0));
-	transform = glm::scale(transform, glm::vec3(scalex, scaley, 0.0));
-
-	GLint uniTrans = glGetUniformLocation(shader->getProgram(),
-			"transformation");
-	glUniformMatrix4fv(uniTrans, 1, GL_FALSE, glm::value_ptr(transform));
+	glUniformMatrix4fv(transUniform, 1, GL_FALSE, glm::value_ptr(transform));
 
 	glUseProgram(shader->getProgram());
 	glBindVertexArray(sqVAO);
@@ -91,19 +85,10 @@ void Renderer::fillRect(int x, int y, int w, int h){
 }
 
 void Renderer::fillOval(int x, int y, int w, int h){
-	float newX = (((float)x / (float)window->getWindowWidth()) * 2.0) - 1.0;
-	float newY = (((float)y / (float)window->getWindowHeight()) * 2.0) - 1.0;
-
-	float scalex = (float)w / (float)window->getWindowWidth();
-	float scaley = (float)h / (float)window->getWindowHeight();
-
-	glm::mat4 transform;
-	transform = glm::translate(transform, glm::vec3(newX, newY, 0.0));
-	transform = glm::scale(transform, glm::vec3(scalex, scaley, 0.0));
-
-	GLint uniTrans = glGetUniformLocation(shader->getProgram(),
-			"transformation");
-	glUniformMatrix4fv(uniTrans, 1, GL_FALSE, glm::value_ptr(transform));
+	transform = glm::mat4();
+	calcTranslate(x, y);
+	calcScale(w, h);
+	glUniformMatrix4fv(transUniform, 1, GL_FALSE, glm::value_ptr(transform));
 
 	glUseProgram(shader->getProgram());
 	glBindVertexArray(crVAO);
@@ -112,29 +97,30 @@ void Renderer::fillOval(int x, int y, int w, int h){
 }
 
 void Renderer::initCrVerts(){
-
-	GLfloat x;
-	GLfloat y;
-	GLfloat x2;
-	GLfloat y2;
 	int ctr = 0;
-
 	for(int i = 0; i < 360; i++){
 		
-		x = (GLfloat)sin((PI * i) / 180.0f);
-		y = (GLfloat)cos((PI * i) / 180.0f);
-		x2 = (GLfloat)sin((PI * (i + 1)) / 180.0f);
-		y2 = (GLfloat)cos((PI * (i + 1)) / 180.0f);
-		
 		crVerts[ctr++] = 0;
 		crVerts[ctr++] = 0;
 
-		crVerts[ctr++] = x;
-		crVerts[ctr++] = y;
+		crVerts[ctr++] = (GLfloat)sin((PI * i) / 180.0f);
+		crVerts[ctr++] = (GLfloat)cos((PI * i) / 180.0f);
 	
-		crVerts[ctr++] = x2;
-		crVerts[ctr++] = y2;
-
-		//std::cout << "x: " << crVerts[j++] << " y: " << crVerts[j++] << std::endl;
+		crVerts[ctr++] = (GLfloat)sin((PI * (i + 1)) / 180.0f);
+		crVerts[ctr++] = (GLfloat)cos((PI * (i + 1)) / 180.0f);
 	}
 }
+
+void Renderer::calcScale(int w, int h){
+	float scalex = (float)w / (float)window->getWindowWidth();
+	float scaley = (float)h / (float)window->getWindowHeight();
+	transform = glm::scale(transform, glm::vec3(scalex, scaley, 0.0));
+}
+
+void Renderer::calcTranslate(int x, int y){
+	float newX = (((float)x / (float)window->getWindowWidth()) * 2.0) - 1.0;
+	float newY = (((float)y / (float)window->getWindowHeight()) * 2.0) - 1.0;
+
+	transform = glm::translate(transform, glm::vec3(newX, newY, 0.0));
+}
+

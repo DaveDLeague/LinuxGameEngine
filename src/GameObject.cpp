@@ -15,9 +15,22 @@ GameObject::GameObject(int x, int y, int w, int h, float r = 0.0f, float g = 0.0
 GameObject::~GameObject(){
 
 }
-	
+
+int speed = 1;
 void GameObject::update(){
-	x++;
+	if(x >= 1000 || x <= 0){
+		speed = -speed;
+	} 
+
+	if(y >= 1000 || y <= 0){
+		speed = -speed;
+	} 
+
+	const Uint8* keys = GameEngine::getInstance()->getKeyState();
+
+	if(keys[GameEngine::UP_KEY]){
+		y += speed;
+	}
 }
 
 void GameObject::draw(Renderer* ren){
