@@ -14,6 +14,10 @@ const GLfloat sqVerts[12] = {
 GLfloat Renderer::crVerts[2160];
 
 Renderer::Renderer(GameWindow* win){
+	this->r = 0.5;
+	this->g = 0.5;
+	this->b = 0.5;		
+
 	initCrVerts();
 
 	shader = new Shader("../LinuxGameEngine/shaders/basic_vertex.vs", 
@@ -51,6 +55,7 @@ Renderer::Renderer(GameWindow* win){
 	glBindVertexArray(0); 
 
 	transUniform = glGetUniformLocation(shader->getProgram(), "transformation");
+	colorUniform = glGetUniformLocation(shader->getProgram(), "inColor");
 }
 
 Renderer::~Renderer(){
@@ -64,11 +69,15 @@ Renderer::~Renderer(){
 }
 
 void Renderer::setColor(int r, int g, int b){
-
+	this->r = (float)r / 255.0f;
+	this->g = (float)g / 255.0f;
+	this->b = (float)b / 255.0f;
 }
 
 void Renderer::setColor(float r, float g, float b){
-
+	this->r = r;
+	this->g = g;
+	this->b = b;
 }
 
 void Renderer::fillRect(int x, int y, int w, int h){
@@ -77,6 +86,7 @@ void Renderer::fillRect(int x, int y, int w, int h){
 	calcScale(w, h);
 
 	glUniformMatrix4fv(transUniform, 1, GL_FALSE, glm::value_ptr(transform));
+	glUniform4f(colorUniform, r, g, b, 1.0f);
 
 	glUseProgram(shader->getProgram());
 	glBindVertexArray(sqVAO);
@@ -88,7 +98,9 @@ void Renderer::fillOval(int x, int y, int w, int h){
 	transform = glm::mat4();
 	calcTranslate(x, y);
 	calcScale(w, h);
+
 	glUniformMatrix4fv(transUniform, 1, GL_FALSE, glm::value_ptr(transform));
+	glUniform4f(colorUniform, r, g, b, 1.0f);
 
 	glUseProgram(shader->getProgram());
 	glBindVertexArray(crVAO);

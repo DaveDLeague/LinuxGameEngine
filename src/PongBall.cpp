@@ -33,6 +33,7 @@ void PongBall::update(){
 }
 
 void PongBall::draw(Renderer* r){
+	r->setColor(1.0f, 0.0f, 0.0f);
 	r->fillOval(x, y, w, h);
 }
 

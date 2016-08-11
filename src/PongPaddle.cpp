@@ -32,6 +32,7 @@ void PongPaddle::update(){
 }
 
 void PongPaddle::draw(Renderer* r){
+	r->setColor(0.0f, 0.0f, 1.0f);
 	r->fillRect(x, y, w, h);
 }
 
