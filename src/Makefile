@@ -1,8 +1,8 @@
 CC=g++
 CFLAGS=-c -Wall
-BIN=*.cpp
+BIN=../src/*.cpp
 INCLUDE=-I ../include 
 
 all:
-	$(CC) $(CFLAGS) $(INCLUDE) $(BIN)
+	cd ../bin; $(CC) $(CFLAGS) $(OUT) $(INCLUDE) $(BIN)
 

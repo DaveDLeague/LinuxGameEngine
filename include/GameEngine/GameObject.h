@@ -32,6 +32,7 @@ protected:
 	int r;
 	int g;
 	int b;
+
 private:
-	void init(int x, int y, int w, int h, int r, int g, int b);
+	virtual void init(int x, int y, int w, int h, int r, int g, int b);
 };

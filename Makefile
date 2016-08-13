@@ -1,13 +1,13 @@
 CC=g++
 OUT=-o ../build
 LIBS=-lSDL2 -lGLEW -lGL
-BIN=*.o
+BIN=*.o 
 
 build: source
-	cd src; $(CC) $(BIN) $(LIBS) $(OUT)
+	cd bin; $(CC) $(BIN) $(LIBS) $(OUT)
 source:
 	cd src; make;
 clean:
-	rm build; cd src; rm *.o
+	rm build; cd bin; rm *.o
 		
 

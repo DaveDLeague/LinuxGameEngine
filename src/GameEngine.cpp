@@ -73,6 +73,7 @@ void GameEngine::startGame() {
 		window->refresh();
 		p.update();
 		b.update();
+		b.checkCollision(p);
 		p.draw(renderer);
 		b.draw(renderer);
 	}

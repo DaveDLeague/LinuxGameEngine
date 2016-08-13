@@ -15,8 +15,14 @@ PongPaddle::PongPaddle(int x, int y, int w, int h, float r, float g, float b)
 	init();
 }	
 
+PongPaddle::~PongPaddle(){
+	delete cbox;
+}
+
 void PongPaddle::update(){
 	const Uint8* keys = GameEngine::getInstance()->getKeyState();
+
+	cbox->update(x, y, w, h);
 
 	if(keys[GameEngine::UP_KEY] || keys[GameEngine::W_KEY]){
 		y += speed;	
@@ -37,5 +43,6 @@ void PongPaddle::draw(Renderer* r){
 }
 
 void PongPaddle::init(){
+	cbox = new CollisionBox(x, y, w, h);
 	speed = 6;
 }
