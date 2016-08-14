@@ -20,13 +20,14 @@ PongBall::~PongBall(){
 }
 
 void PongBall::update(){
-	x += xspeed;
-	y += yspeed;
-
-	cbox->update(x, y, w, h);
-
+	cbox->update(x + xspeed, y + yspeed, w, h);	
+	
 	if(cbox->isColliding()){
-		x = 500;
+		xspeed = -xspeed;
+		cbox->update(x + xspeed, y + yspeed, w, h);
+	}else{
+		x += xspeed;
+		y += yspeed;
 	}
 
 	if(x <= 0 || x >= GameEngine::getInstance()->getWindowWidth() - w){ 
@@ -35,7 +36,6 @@ void PongBall::update(){
 	if(y <= 0 || y >= GameEngine::getInstance()->getWindowHeight() - h){
 		yspeed = -yspeed;
 	}
-	
 }
 
 void PongBall::draw(Renderer* r){

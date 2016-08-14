@@ -96,8 +96,8 @@ void Renderer::fillRect(int x, int y, int w, int h){
 
 void Renderer::fillOval(int x, int y, int w, int h){
 	transform = glm::mat4();
-	calcTranslate(x, y);
-	calcScale(w, h);
+	calcTranslate(x + (w / 2), y + (h / 2));
+	calcScale(w / 2, h / 2);
 
 	glUniformMatrix4fv(transUniform, 1, GL_FALSE, glm::value_ptr(transform));
 	glUniform4f(colorUniform, r, g, b, 1.0f);
@@ -124,9 +124,9 @@ void Renderer::initCrVerts(){
 }
 
 void Renderer::calcScale(int w, int h){
-	float scalex = (float)w / (float)window->getWindowWidth();
-	float scaley = (float)h / (float)window->getWindowHeight();
-	transform = glm::scale(transform, glm::vec3(scalex * 2, scaley * 2, 0.0));
+	float scalex = (float)w / (float)window->getWindowWidth() * 2;
+	float scaley = (float)h / (float)window->getWindowHeight() * 2;
+	transform = glm::scale(transform, glm::vec3(scalex, scaley, 0.0));
 }
 
 void Renderer::calcTranslate(int x, int y){
