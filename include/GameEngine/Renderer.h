@@ -18,22 +18,30 @@ public:
 
 	void fillRect(int x, int y, int w, int h);
 	void fillOval(int x, int y, int w, int h);
+	void drawImage(int x, int y, int w, int h);
 
 private:
 	GLuint sqVAO;
 	GLuint sqVBO;
 	GLuint crVAO;
 	GLuint crVBO;
-	
-	GLint transUniform;
-	GLint colorUniform;
+
+	GLuint texAttrib;	
+	GLuint texture;
+
+	GLuint transUniform;
+	GLuint colorUniform;
+
+	GLuint texTransUniform;
 
 	Shader* shader;
+	Shader* texShader;
 	GameWindow* window;
 
 	glm::mat4 transform;
 
-	static GLfloat crVerts[2160];
+	static GLfloat crVerts[722];
+	static GLuint crElmts[360 * 3];
 
 	void initCrVerts();
 	void calcScale(int w, int h);

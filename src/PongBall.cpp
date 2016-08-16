@@ -1,5 +1,7 @@
 #include "PongBall.h"
 
+const int SPEED = 0;
+
 PongBall::PongBall(int x, int y, int w, int h)
 :GameObject(x, y, w, h){
 	init();
@@ -49,6 +51,6 @@ void PongBall::checkCollision(GameObject o){
 
 void PongBall::init(){
 	cbox = new CollisionBox(x, y, w, h);
-	xspeed = 9;
-	yspeed = 9;
+	xspeed = SPEED;
+	yspeed = SPEED;
 }

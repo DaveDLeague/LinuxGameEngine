@@ -2,16 +2,17 @@
 
 const double PI = 3.1415926535897;
 
-const GLfloat sqVerts[12] = { 
-				0.0f, 0.0f,
-				0.0f, 1.0f,
-			   	1.0f, 1.0f,
-			   	1.0f, 1.0f,
-			   	1.0f, 0.0f,
-			   	0.0f, 0.0f,
+const GLfloat sqVerts[16] = { 
+					0.0f, 0.0f, 0.0f, 0.0f,
+					0.0f, 1.0f,	0.0f, 1.0f,
+			   		1.0f, 1.0f, 1.0f, 1.0f,
+			   		1.0f, 0.0f,	1.0f, 0.0f
 			    };
 
-GLfloat Renderer::crVerts[2160];
+const GLuint sqElmts[6] = {0, 1, 2, 2, 3, 0};
+
+GLfloat Renderer::crVerts[722];
+GLuint Renderer::crElmts[360 * 3];
 
 Renderer::Renderer(GameWindow* win){
 	this->r = 0.5;
@@ -22,6 +23,9 @@ Renderer::Renderer(GameWindow* win){
 
 	shader = new Shader("../LinuxGameEngine/shaders/basic_vertex.vs", 
 	"../LinuxGameEngine/shaders/basic_fragment.fs");
+
+	texShader = new Shader("../LinuxGameEngine/shaders/basic_tex_vertex.vs", 
+	"../LinuxGameEngine/shaders/basic_tex_fragment.fs");
 
 	this->window = win;
 
@@ -34,9 +38,21 @@ Renderer::Renderer(GameWindow* win){
 
 	glBindBuffer(GL_ARRAY_BUFFER, sqVBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(sqVerts), sqVerts, GL_STATIC_DRAW);
+	
+	texAttrib = glGetAttribLocation(texShader->getProgram(), "texCoord");
+    glEnableVertexAttribArray(texAttrib);
+	glVertexAttribPointer(texAttrib, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (void*)(2 * sizeof(GLfloat)));
 
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, 0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), 0);
+	
+    GLuint ebo;
+    glGenBuffers(1, &ebo);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(sqElmts), sqElmts, GL_STATIC_DRAW);
+
 	glEnableVertexAttribArray(0);
+	glBindVertexArray(0);
 
 	//CIRCLE VAO & VBO
 
@@ -49,16 +65,40 @@ Renderer::Renderer(GameWindow* win){
 	glBufferData(GL_ARRAY_BUFFER, sizeof(crVerts), crVerts, GL_STATIC_DRAW);
 
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, 0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);  
+
+	GLuint cebo;
+    glGenBuffers(1, &cebo);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cebo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(crElmts), crElmts, GL_STATIC_DRAW);
+
 	glEnableVertexAttribArray(0);
+	glBindVertexArray(0);
 
-	glBindBuffer(GL_ARRAY_BUFFER, 0); 
-	glBindVertexArray(0); 
+	//TEXTURE
+	glGenTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
 
+	float pixels[] = {
+    	1.0f, 0.0f, 0.0f,   0.0f, 0.0f, 1.0f,
+   		0.0f, 0.0f, 1.0f,   1.0f, 0.0f, 0.0f
+	};
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 2, 2, 0, GL_RGB, GL_FLOAT, pixels);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);	
+
+	//UNIFORMS
 	transUniform = glGetUniformLocation(shader->getProgram(), "transformation");
 	colorUniform = glGetUniformLocation(shader->getProgram(), "inColor");
+	texTransUniform = glGetUniformLocation(texShader->getProgram(), "transformation");
 }
 
 Renderer::~Renderer(){
+	glDeleteTextures(1, &texture);
+
 	glDeleteVertexArrays(1, &sqVAO);
 	glDeleteBuffers(1, &sqVBO);
 
@@ -66,6 +106,7 @@ Renderer::~Renderer(){
 	glDeleteBuffers(1, &crVBO);
 
 	delete shader;
+	delete texShader;
 }
 
 void Renderer::setColor(int r, int g, int b){
@@ -85,12 +126,13 @@ void Renderer::fillRect(int x, int y, int w, int h){
 	calcTranslate(x, y);
 	calcScale(w, h);
 
+	glUseProgram(shader->getProgram());
+
 	glUniformMatrix4fv(transUniform, 1, GL_FALSE, glm::value_ptr(transform));
 	glUniform4f(colorUniform, r, g, b, 1.0f);
 
-	glUseProgram(shader->getProgram());
 	glBindVertexArray(sqVAO);
-	glDrawArrays(GL_TRIANGLES, 0, sizeof(sqVerts) / 2);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
 }
 
@@ -99,27 +141,46 @@ void Renderer::fillOval(int x, int y, int w, int h){
 	calcTranslate(x + (w / 2), y + (h / 2));
 	calcScale(w / 2, h / 2);
 
+	glUseProgram(shader->getProgram());
+
 	glUniformMatrix4fv(transUniform, 1, GL_FALSE, glm::value_ptr(transform));
 	glUniform4f(colorUniform, r, g, b, 1.0f);
 
-	glUseProgram(shader->getProgram());
+	
 	glBindVertexArray(crVAO);
-	glDrawArrays(GL_TRIANGLES, 0, sizeof(crVerts) / 2);
+	glDrawElements(GL_TRIANGLES, 360 * 3, GL_UNSIGNED_INT, 0);
+	glBindVertexArray(0);
+}
+
+void Renderer::drawImage(int x, int y, int w, int h){
+	transform = glm::mat4();
+	calcTranslate(x, y);
+	calcScale(w, h);
+
+	glUseProgram(texShader->getProgram());
+	
+	glUniformMatrix4fv(texTransUniform, 1, GL_FALSE, glm::value_ptr(transform));
+	//glBindTexture(GL_TEXTURE_2D, texture);
+	glBindVertexArray(sqVAO);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
 	glBindVertexArray(0);
 }
 
 void Renderer::initCrVerts(){
-	int ctr = 0;
-	for(int i = 0; i < 360; i++){
-		
-		crVerts[ctr++] = 0;
-		crVerts[ctr++] = 0;
+	int ctr = 2;
+	int ectr = 0;
+	
+	crVerts[0] = 0.0f;
+	crVerts[1] = 0.0f;
 
+	for(int i = 0; i < 360; i++){
 		crVerts[ctr++] = (GLfloat)sin((PI * i) / 180.0f);
 		crVerts[ctr++] = (GLfloat)cos((PI * i) / 180.0f);
-	
-		crVerts[ctr++] = (GLfloat)sin((PI * (i + 1)) / 180.0f);
-		crVerts[ctr++] = (GLfloat)cos((PI * (i + 1)) / 180.0f);
+
+		crElmts[ectr++] = 0;
+		crElmts[ectr++] = i + 1;
+		crElmts[ectr++] = i + 2;
 	}
 }
 
