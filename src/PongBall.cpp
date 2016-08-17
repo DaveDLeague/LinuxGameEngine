@@ -1,6 +1,6 @@
 #include "PongBall.h"
 
-const int SPEED = 0;
+const int SPEED = 10;
 
 PongBall::PongBall(int x, int y, int w, int h)
 :GameObject(x, y, w, h){

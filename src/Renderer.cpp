@@ -1,12 +1,15 @@
 #include "GameEngine/Renderer.h"
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+
 const double PI = 3.1415926535897;
 
 const GLfloat sqVerts[16] = { 
-					0.0f, 0.0f, 0.0f, 0.0f,
-					0.0f, 1.0f,	0.0f, 1.0f,
-			   		1.0f, 1.0f, 1.0f, 1.0f,
-			   		1.0f, 0.0f,	1.0f, 0.0f
+					0.0f, 0.0f, 0.0f, 1.0f,
+					0.0f, 1.0f,	0.0f, 0.0f,
+			   		1.0f, 1.0f, 1.0f, 0.0f,
+			   		1.0f, 0.0f,	1.0f, 1.0f
 			    };
 
 const GLuint sqElmts[6] = {0, 1, 2, 2, 3, 0};
@@ -81,11 +84,23 @@ Renderer::Renderer(GameWindow* win){
 	glGenTextures(1, &texture);
 	glBindTexture(GL_TEXTURE_2D, texture);
 
-	float pixels[] = {
-    	1.0f, 0.0f, 0.0f,   0.0f, 0.0f, 1.0f,
-   		0.0f, 0.0f, 1.0f,   1.0f, 0.0f, 0.0f
-	};
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 2, 2, 0, GL_RGB, GL_FLOAT, pixels);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+
+	int w;
+	int h;
+	int comp;
+	GLubyte* image = stbi_load("../LinuxGameEngine/res/dice.png", &w, &h, &comp, STBI_rgb_alpha);
+
+	//float pixels[] = {
+    //	1.0f, 0.0f, 0.0f,   0.0f, 0.0f, 1.0f,
+   	//	0.0f, 0.0f, 1.0f,   1.0f, 0.0f, 0.0f
+	//};
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+
+	stbi_image_free(image);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);	
