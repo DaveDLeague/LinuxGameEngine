@@ -33,6 +33,18 @@ void GameWindow::refresh(){
 	
 }
 
+void GameWindow::setVisible(bool v){
+	if(v){
+		SDL_ShowWindow(window);
+	}else{
+		SDL_HideWindow(window);
+	}
+}
+
+void GameWindow::centerWindow(){
+	SDL_SetWindowPosition(window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
+}
+
 void GameWindow::setBackgroundColor(float r, float g, float b){
 	glClearColor(r, g, b, 1.0);
 }
@@ -51,4 +63,30 @@ int GameWindow::getWindowHeight(){
 	SDL_GetWindowSize(window, &w, &h);
 	
 	return h;
+}
+
+std::string GameWindow::getWindowTitle(){
+	return SDL_GetWindowTitle(window);
+}
+
+void GameWindow::setWindowWidth(int w){
+	SDL_SetWindowSize(window, w, getWindowHeight());
+	glViewport(0, 0, w, getWindowHeight());
+
+}
+
+void GameWindow::setWindowHeight(int h){
+	SDL_SetWindowSize(window, getWindowWidth(), h);
+	glViewport(0, 0, getWindowHeight(), h);
+
+}
+
+void GameWindow::setWindowSize(int w, int h){
+	SDL_SetWindowSize(window, w, h);
+	glViewport(0, 0, w, h);
+
+}
+
+void GameWindow::setWindowTitle(std::string t){
+	SDL_SetWindowTitle(window, t.c_str());
 }

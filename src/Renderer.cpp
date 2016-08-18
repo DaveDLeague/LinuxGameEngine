@@ -22,18 +22,67 @@ Renderer::Renderer(GameWindow* win){
 	this->g = 0.5;
 	this->b = 0.5;		
 
+	this->window = win;
+
+	initShaders();
+
 	initCrVerts();
 
+	initRectBuffer();
+	initEllipseBuffer();
+	
+//////////////////////////////////////////////////////////
+	glGenTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+
+	int w;
+	int h;
+	int comp;
+	GLubyte* image = stbi_load("../LinuxGameEngine/res/dice.png", &w, &h, &comp, STBI_rgb_alpha);
+///////////////////////////////////////////////////////////////////////////////
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+
+	stbi_image_free(image);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); 
+
+	loadUniforms();
+}
+
+Renderer::~Renderer(){
+	glDeleteTextures(1, &texture);
+
+	glDeleteVertexArrays(1, &sqVAO);
+	glDeleteBuffers(1, &sqVBO);
+
+	glDeleteVertexArrays(1, &crVAO);
+	glDeleteBuffers(1, &crVBO);
+
+	delete shader;
+	delete texShader;
+}
+
+void Renderer::loadUniforms(){
+	transUniform = glGetUniformLocation(shader->getProgram(), "transformation");
+	colorUniform = glGetUniformLocation(shader->getProgram(), "inColor");
+	texTransUniform = glGetUniformLocation(texShader->getProgram(), "transformation");
+}
+
+void Renderer::initShaders(){
 	shader = new Shader("../LinuxGameEngine/shaders/basic_vertex.vs", 
 	"../LinuxGameEngine/shaders/basic_fragment.fs");
 
 	texShader = new Shader("../LinuxGameEngine/shaders/basic_tex_vertex.vs", 
 	"../LinuxGameEngine/shaders/basic_tex_fragment.fs");
+}
 
-	this->window = win;
-
-	//SQUARE VAO & VBO
-
+void Renderer::initRectBuffer(){
 	glGenVertexArrays(1, &sqVAO);
 	glGenBuffers(1, &sqVBO);
 	
@@ -56,9 +105,9 @@ Renderer::Renderer(GameWindow* win){
 
 	glEnableVertexAttribArray(0);
 	glBindVertexArray(0);
+}
 
-	//CIRCLE VAO & VBO
-
+void Renderer::initEllipseBuffer(){
 	glGenVertexArrays(1, &crVAO);
 	glGenBuffers(1, &crVBO);
 	
@@ -79,49 +128,6 @@ Renderer::Renderer(GameWindow* win){
 
 	glEnableVertexAttribArray(0);
 	glBindVertexArray(0);
-
-	//TEXTURE
-	glGenTextures(1, &texture);
-	glBindTexture(GL_TEXTURE_2D, texture);
-
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-
-	int w;
-	int h;
-	int comp;
-	GLubyte* image = stbi_load("../LinuxGameEngine/res/dice.png", &w, &h, &comp, STBI_rgb_alpha);
-
-	//float pixels[] = {
-    //	1.0f, 0.0f, 0.0f,   0.0f, 0.0f, 1.0f,
-   	//	0.0f, 0.0f, 1.0f,   1.0f, 0.0f, 0.0f
-	//};
-
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
-
-	stbi_image_free(image);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);	
-
-	//UNIFORMS
-	transUniform = glGetUniformLocation(shader->getProgram(), "transformation");
-	colorUniform = glGetUniformLocation(shader->getProgram(), "inColor");
-	texTransUniform = glGetUniformLocation(texShader->getProgram(), "transformation");
-}
-
-Renderer::~Renderer(){
-	glDeleteTextures(1, &texture);
-
-	glDeleteVertexArrays(1, &sqVAO);
-	glDeleteBuffers(1, &sqVBO);
-
-	glDeleteVertexArrays(1, &crVAO);
-	glDeleteBuffers(1, &crVBO);
-
-	delete shader;
-	delete texShader;
 }
 
 void Renderer::setColor(int r, int g, int b){
@@ -161,7 +167,6 @@ void Renderer::fillOval(int x, int y, int w, int h){
 	glUniformMatrix4fv(transUniform, 1, GL_FALSE, glm::value_ptr(transform));
 	glUniform4f(colorUniform, r, g, b, 1.0f);
 
-	
 	glBindVertexArray(crVAO);
 	glDrawElements(GL_TRIANGLES, 360 * 3, GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
@@ -171,11 +176,11 @@ void Renderer::drawImage(int x, int y, int w, int h){
 	transform = glm::mat4();
 	calcTranslate(x, y);
 	calcScale(w, h);
-
+	
 	glUseProgram(texShader->getProgram());
 	
 	glUniformMatrix4fv(texTransUniform, 1, GL_FALSE, glm::value_ptr(transform));
-	//glBindTexture(GL_TEXTURE_2D, texture);
+
 	glBindVertexArray(sqVAO);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 

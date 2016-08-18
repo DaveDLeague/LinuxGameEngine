@@ -5,8 +5,6 @@
 class CollisionBox: public GameObject{
 	public:
 		CollisionBox(int x, int y, int w, int h);
-		CollisionBox(int x, int y, int w, int h, int r, int g, int b);
-		CollisionBox(int x, int y, int w, int h, float r, float g, float b);
 
 		virtual void update();
 		virtual void update(int x, int y, int w, int h);

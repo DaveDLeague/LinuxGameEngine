@@ -5,15 +5,6 @@ CollisionBox::CollisionBox(int x, int y, int w, int h)
 
 }
 
-CollisionBox::CollisionBox(int x, int y, int w, int h, int r, int g, int b)
-:GameObject(x, y, w, h, r, g, b){
-
-}
-
-CollisionBox::CollisionBox(int x, int y, int w, int h, float r, float g, float b)
-:GameObject(x, y, w, h, r, g, b){
-
-}
 
 void CollisionBox::checkCollision(GameObject o){
 	int ox = o.getX();

@@ -5,15 +5,6 @@ PongPaddle::PongPaddle(int x, int y, int w, int h)
 	init();
 }
 
-PongPaddle::PongPaddle(int x, int y, int w, int h, int r, int g, int b)
-:GameObject(x, y, w, h, r, g, b){
-	init();
-}
-
-PongPaddle::PongPaddle(int x, int y, int w, int h, float r, float g, float b)
-:GameObject(x, y, w, h, r, g, b){
-	init();
-}	
 
 PongPaddle::~PongPaddle(){
 	delete cbox;
@@ -37,10 +28,10 @@ void PongPaddle::update(){
 	}
 }
 
-void PongPaddle::draw(Renderer* r){
-	r->setColor(0.0f, 0.0f, 1.0f);
-	//r->fillRect(x, y, w, h);
-	r->drawImage(x, y, w, h);
+void PongPaddle::draw(){
+	GameEngine::getInstance()->getRenderer()->setColor(0.0f, 0.0f, 1.0f);
+
+	GameEngine::getInstance()->getRenderer()->fillRect(x, y, w, h);
 }
 
 void PongPaddle::init(){

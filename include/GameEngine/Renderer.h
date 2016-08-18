@@ -46,6 +46,10 @@ private:
 	void initCrVerts();
 	void calcScale(int w, int h);
 	void calcTranslate(int x, int y);
+	void loadUniforms();
+	void initShaders();
+	void initRectBuffer();
+	void initEllipseBuffer();
 
 	float r;
 	float g;

@@ -7,16 +7,6 @@ PongBall::PongBall(int x, int y, int w, int h)
 	init();
 }
 
-PongBall::PongBall(int x, int y, int w, int h, int r, int g, int b)
-:GameObject(x, y, w, h, r, g, b){
-	init();
-}
-
-PongBall::PongBall(int x, int y, int w, int h, float r, float g, float b)
-:GameObject(x, y, w, h, r, g, b){
-	init();
-}	
-
 PongBall::~PongBall(){
 	delete cbox;
 }
@@ -40,9 +30,9 @@ void PongBall::update(){
 	}
 }
 
-void PongBall::draw(Renderer* r){
-	r->setColor(1.0f, 0.0f, 0.0f);
-	r->fillOval(x, y, w, h);
+void PongBall::draw(){
+	GameEngine::getInstance()->getRenderer()->setColor(1.0f, 0.0f, 0.0f);
+	GameEngine::getInstance()->getRenderer()->drawImage(x, y, w, h);
 }
 
 void PongBall::checkCollision(GameObject o){
