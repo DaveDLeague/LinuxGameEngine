@@ -1,5 +1,7 @@
 #include "GameEngine/Renderer.h"
 
+#include <map>
+
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
@@ -13,11 +15,15 @@ const GLfloat sqVerts[16] = {
 			    };
 
 const GLuint sqElmts[6] = {0, 1, 2, 2, 3, 0};
+const GLuint boxElmts[4] = { 0, 1, 2, 3 };
 
 GLfloat Renderer::crVerts[722];
-GLuint Renderer::crElmts[360 * 3];
+
+GLuint Renderer::crElmts[NUM_ELMS];
 
 Renderer::Renderer(GameWindow* win){
+	this->strokeWidth = 1;
+
 	this->r = 0.5;
 	this->g = 0.5;
 	this->b = 0.5;		
@@ -30,9 +36,15 @@ Renderer::Renderer(GameWindow* win){
 
 	initRectBuffer();
 	initEllipseBuffer();
+
+	//glEnable(GL_CULL_FACE);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	
+	textRenderer = new TextRenderer();
+
 //////////////////////////////////////////////////////////
-	glGenTextures(1, &texture);
+	/*glGenTextures(1, &texture);
 	glBindTexture(GL_TEXTURE_2D, texture);
 
 	glEnable(GL_BLEND);
@@ -50,7 +62,7 @@ Renderer::Renderer(GameWindow* win){
 	stbi_image_free(image);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); 
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); */
 
 	loadUniforms();
 }
@@ -65,20 +77,21 @@ Renderer::~Renderer(){
 	glDeleteBuffers(1, &crVBO);
 
 	delete shader;
-	delete texShader;
+	delete textureShader;
+	delete textRenderer;
 }
 
 void Renderer::loadUniforms(){
 	transUniform = glGetUniformLocation(shader->getProgram(), "transformation");
 	colorUniform = glGetUniformLocation(shader->getProgram(), "inColor");
-	texTransUniform = glGetUniformLocation(texShader->getProgram(), "transformation");
+	texTransUniform = glGetUniformLocation(textureShader->getProgram(), "transformation");
 }
 
 void Renderer::initShaders(){
 	shader = new Shader("../LinuxGameEngine/shaders/basic_vertex.vs", 
 	"../LinuxGameEngine/shaders/basic_fragment.fs");
 
-	texShader = new Shader("../LinuxGameEngine/shaders/basic_tex_vertex.vs", 
+	textureShader = new Shader("../LinuxGameEngine/shaders/basic_tex_vertex.vs", 
 	"../LinuxGameEngine/shaders/basic_tex_fragment.fs");
 }
 
@@ -91,7 +104,7 @@ void Renderer::initRectBuffer(){
 	glBindBuffer(GL_ARRAY_BUFFER, sqVBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(sqVerts), sqVerts, GL_STATIC_DRAW);
 	
-	texAttrib = glGetAttribLocation(texShader->getProgram(), "texCoord");
+	texAttrib = glGetAttribLocation(textureShader->getProgram(), "texCoord");
     glEnableVertexAttribArray(texAttrib);
 	glVertexAttribPointer(texAttrib, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (void*)(2 * sizeof(GLfloat)));
 
@@ -154,6 +167,25 @@ void Renderer::fillRect(int x, int y, int w, int h){
 
 	glBindVertexArray(sqVAO);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+	
+	glBindVertexArray(0);
+}
+
+void Renderer::drawRect(int x, int y, int w, int h){
+	transform = glm::mat4();
+	calcTranslate(x, y);
+	calcScale(w, h);
+
+	glUseProgram(shader->getProgram());
+
+	glUniformMatrix4fv(transUniform, 1, GL_FALSE, glm::value_ptr(transform));
+	glUniform4f(colorUniform, r, g, b, 1.0f);
+
+	glBindVertexArray(sqVAO);
+	glEnable(GL_LINE_SMOOTH);
+	glLineWidth(strokeWidth);
+	glDrawArrays(GL_LINE_LOOP, 0, 4);
+	
 	glBindVertexArray(0);
 }
 
@@ -168,7 +200,7 @@ void Renderer::fillOval(int x, int y, int w, int h){
 	glUniform4f(colorUniform, r, g, b, 1.0f);
 
 	glBindVertexArray(crVAO);
-	glDrawElements(GL_TRIANGLES, 360 * 3, GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, NUM_ELMS, GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
 }
 
@@ -177,7 +209,7 @@ void Renderer::drawImage(int x, int y, int w, int h){
 	calcTranslate(x, y);
 	calcScale(w, h);
 	
-	glUseProgram(texShader->getProgram());
+	glUseProgram(textureShader->getProgram());
 	
 	glUniformMatrix4fv(texTransUniform, 1, GL_FALSE, glm::value_ptr(transform));
 
@@ -185,6 +217,10 @@ void Renderer::drawImage(int x, int y, int w, int h){
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 	glBindVertexArray(0);
+}
+
+void Renderer::drawText(std::string text, int x, int y){
+	textRenderer->renderText(text, x, y, 1);
 }
 
 void Renderer::initCrVerts(){
@@ -202,6 +238,10 @@ void Renderer::initCrVerts(){
 		crElmts[ectr++] = i + 1;
 		crElmts[ectr++] = i + 2;
 	}
+
+	crElmts[ectr++] = 0;
+	crElmts[ectr++] = 360;
+	crElmts[ectr++] = 1;
 }
 
 void Renderer::calcScale(int w, int h){

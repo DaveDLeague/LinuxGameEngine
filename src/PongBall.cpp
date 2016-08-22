@@ -32,7 +32,7 @@ void PongBall::update(){
 
 void PongBall::draw(){
 	GameEngine::getInstance()->getRenderer()->setColor(1.0f, 0.0f, 0.0f);
-	GameEngine::getInstance()->getRenderer()->drawImage(x, y, w, h);
+	GameEngine::getInstance()->getRenderer()->fillOval(x, y, w, h);
 }
 
 void PongBall::checkCollision(GameObject o){

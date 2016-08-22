@@ -30,7 +30,6 @@ void PongPaddle::update(){
 
 void PongPaddle::draw(){
 	GameEngine::getInstance()->getRenderer()->setColor(0.0f, 0.0f, 1.0f);
-
 	GameEngine::getInstance()->getRenderer()->fillRect(x, y, w, h);
 }
 

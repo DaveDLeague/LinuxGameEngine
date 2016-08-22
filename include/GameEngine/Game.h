@@ -6,11 +6,15 @@
 
 class Game{
 public:
-	Game();
-	Game(int w, int h, std::string t);
-	virtual ~Game();
+	Game(){}
+	Game(int w, int h, std::string t){
+		width = w;
+		height = h;
+		title = t;
+	}
+	virtual ~Game(){}
 
-	virtual void update();
+	virtual void update() = 0;
 
 	int getWidth(){ return width; }
 	int getHeight(){ return height; }

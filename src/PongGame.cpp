@@ -12,9 +12,12 @@ PongGame::~PongGame(){
 }
 
 void PongGame::update(){
+	
 	paddle->update();
 	ball->update();
 	ball->checkCollision(*paddle);
 	paddle->draw();
 	ball->draw();
+
+	GameEngine::getInstance()->getRenderer()->drawText("TEST", 10, 10);
 }
