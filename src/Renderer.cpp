@@ -1,9 +1,4 @@
-#include "GameEngine/Renderer.h"
-
-#include <map>
-
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
+#include "GameEngine/Renderer.h"	
 
 const double PI = 3.1415926535897;
 
@@ -30,46 +25,23 @@ Renderer::Renderer(GameWindow* win){
 
 	this->window = win;
 
+	textRenderer = new TextRenderer();
+	textRenderer->loadFont("asimov", "../LinuxGameEngine/res/fonts/Asimov.otf");
+
 	initShaders();
 
 	initCrVerts();
-
+	
 	initRectBuffer();
 	initEllipseBuffer();
 
-	//glEnable(GL_CULL_FACE);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	
-	textRenderer = new TextRenderer();
-
-//////////////////////////////////////////////////////////
-	/*glGenTextures(1, &texture);
-	glBindTexture(GL_TEXTURE_2D, texture);
-
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-
-	int w;
-	int h;
-	int comp;
-	GLubyte* image = stbi_load("../LinuxGameEngine/res/dice.png", &w, &h, &comp, STBI_rgb_alpha);
-///////////////////////////////////////////////////////////////////////////////
-
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
-
-	stbi_image_free(image);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); */
 
 	loadUniforms();
 }
 
 Renderer::~Renderer(){
-	glDeleteTextures(1, &texture);
-
 	glDeleteVertexArrays(1, &sqVAO);
 	glDeleteBuffers(1, &sqVBO);
 
@@ -204,13 +176,14 @@ void Renderer::fillOval(int x, int y, int w, int h){
 	glBindVertexArray(0);
 }
 
-void Renderer::drawImage(int x, int y, int w, int h){
+void Renderer::drawImage(std::string imageName, int x, int y, int w, int h){
 	transform = glm::mat4();
 	calcTranslate(x, y);
 	calcScale(w, h);
 	
 	glUseProgram(textureShader->getProgram());
 	
+	glBindTexture(GL_TEXTURE_2D, textures[imageName]->getID());
 	glUniformMatrix4fv(texTransUniform, 1, GL_FALSE, glm::value_ptr(transform));
 
 	glBindVertexArray(sqVAO);
@@ -219,8 +192,16 @@ void Renderer::drawImage(int x, int y, int w, int h){
 	glBindVertexArray(0);
 }
 
+void Renderer::loadTexture(std::string textureName, std::string textureLoc, bool hasTransparency){
+	textures[textureName] = new Texture(textureLoc, hasTransparency);
+}
+
 void Renderer::drawText(std::string text, int x, int y){
-	textRenderer->renderText(text, x, y, 1);
+	textRenderer->renderText(text, x, y, 1, glm::vec3(r, g, b));
+}
+
+void Renderer::setDimensions(float w, float h){
+	textRenderer->setDimensions(w, h);
 }
 
 void Renderer::initCrVerts(){

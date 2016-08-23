@@ -11,24 +11,31 @@
 #include "GameEngine/Shader.h"
 
 struct Character {
-    GLuint TextureID;   // ID handle of the glyph texture
-    glm::ivec2 Size;    // Size of glyph
-    glm::ivec2 Bearing;  // Offset from baseline to left/top of glyph
-    long Advance;    // Horizontal offset to advance to next glyph
+    GLuint TextureID;
+    glm::ivec2 Size;   
+    glm::ivec2 Bearing; 
+    long Advance;   
 };
 
 class TextRenderer{
-	public:
-		TextRenderer();
-		virtual ~TextRenderer();
+public:
+	TextRenderer();
+	virtual ~TextRenderer();
 
-		void renderText(std::string text, int x, int y, int size);
+	void renderText(std::string text, int x, int y, int size, glm::vec3 color);
+	void setDimensions(float w, float h);
+	void loadFont(std::string fontName, std::string fontLoc);
+	void setFont(std::string);
 		
 private:
     GLuint VAO;
 	GLuint VBO;
+	GLuint colorUniLoc;
+
+	std::string currentFont;
 
 	std::map<GLchar, Character> characters;
+	std::map<std::string, std::map<GLchar, Character> > fonts;
 
 	Shader* shader;
 

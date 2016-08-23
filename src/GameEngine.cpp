@@ -64,7 +64,10 @@ void GameEngine::initGLEW(){
 
 void GameEngine::loadGame(Game* game){
 	currentGame = game;
-	window->setWindowSize(currentGame->getWidth(), currentGame->getHeight());
+	int w = currentGame->getWidth();
+	int h = currentGame->getHeight();
+	window->setWindowSize(w, h);
+	renderer->setDimensions((float)w, (float)h);
 	window->setWindowTitle(currentGame->getTitle());
 	window->setBackgroundColor(0.0f, 1.0f, 0.0f);
 	window->centerWindow();

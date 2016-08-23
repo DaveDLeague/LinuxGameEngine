@@ -1,10 +1,12 @@
 #pragma once
 
-#include <string>
 #include <math.h>
+#include <map>
+#include <string>
 #include "GameEngine/Shader.h"
-#include "GameEngine/GameWindow.h"
 #include "GameEngine/TextRenderer.h"
+#include "GameEngine/GameWindow.h"
+#include "GameEngine/Texture.h"
 #include "GL/glew.h"
 #include "glm/glm.hpp"
 #include <glm/gtc/matrix_transform.hpp>
@@ -23,8 +25,10 @@ public:
 	void fillRect(int x, int y, int w, int h);
 	void drawRect(int x, int y, int w, int h);
 	void fillOval(int x, int y, int w, int h);
-	void drawImage(int x, int y, int w, int h);
+	void drawImage(std::string imageName, int x, int y, int w, int h);
 	void drawText(std::string text, int x, int y);
+	void setDimensions(float w, float h);	
+	void loadTexture(std::string textureName, std::string textureLoc, bool hasTransparency);
 
 	void setStrokeWidth(int w) { strokeWidth = w; }
 
@@ -34,19 +38,20 @@ private:
 	GLuint crVAO;
 	GLuint crVBO;
 
-	GLuint texAttrib;	
-	GLuint texture;
+	GLuint texAttrib;
 
 	GLuint transUniform;
 	GLuint colorUniform;
-
 	GLuint texTransUniform;
 
 	Shader* shader;
 	Shader* textureShader;
 
-	GameWindow* window;
+	std::map<std::string, Texture*> textures;	
+
 	TextRenderer* textRenderer;
+
+	GameWindow* window;
 
 	glm::mat4 transform;
 
