@@ -51,6 +51,11 @@ Renderer::~Renderer(){
 	delete shader;
 	delete textureShader;
 	delete textRenderer;
+
+	for(std::map<std::string, Texture*>::iterator it = textures.begin();
+		it != textures.end(); it++){
+		delete it->second;
+	}
 }
 
 void Renderer::loadUniforms(){
@@ -192,12 +197,12 @@ void Renderer::drawImage(std::string imageName, int x, int y, int w, int h){
 	glBindVertexArray(0);
 }
 
-void Renderer::loadTexture(std::string textureName, std::string textureLoc, bool hasTransparency){
+void Renderer::loadImage(std::string textureName, std::string textureLoc, bool hasTransparency){
 	textures[textureName] = new Texture(textureLoc, hasTransparency);
 }
 
-void Renderer::drawText(std::string text, int x, int y){
-	textRenderer->renderText(text, x, y, 1, glm::vec3(r, g, b));
+void Renderer::drawText(std::string text, int x, int y, float scale){
+	textRenderer->renderText(text, x, y, scale, glm::vec3(r, g, b));
 }
 
 void Renderer::setDimensions(float w, float h){
@@ -236,5 +241,13 @@ void Renderer::calcTranslate(int x, int y){
 	float newY = (((float)y / (float)window->getWindowHeight()) * 2.0) - 1.0;
 
 	transform = glm::translate(transform, glm::vec3(newX, newY, 0.0));
+}
+
+void Renderer::loadFont(std::string fontName, std::string fontLoc){
+	textRenderer->loadFont(fontName, fontLoc);
+}
+
+void Renderer::setFont(std::string font){
+	textRenderer->setFont(font);
 }
 

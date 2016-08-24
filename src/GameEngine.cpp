@@ -4,6 +4,8 @@
 #include "PongPaddle.h"
 #include "PongBall.h"
 
+const int GameEngine::ENTER_KEY = SDL_SCANCODE_RETURN;
+const int GameEngine::SPACE_KEY = SDL_SCANCODE_SPACE;
 const int GameEngine::UP_KEY = SDL_SCANCODE_UP;
 const int GameEngine::DOWN_KEY = SDL_SCANCODE_DOWN;
 const int GameEngine::LEFT_KEY = SDL_SCANCODE_LEFT;
@@ -15,6 +17,26 @@ const int GameEngine::D_KEY = SDL_SCANCODE_D;
 
 GameEngine* GameEngine::gameEngineInstance;
 
+const Uint8* getKeyState();
+
+void setColor(int r, int g, int b);
+void setColor(float r, float g, float b);
+void setBackgroundColor(int r, int g, int b);
+void setBackgroundColor(float r, float g, float b);
+void fillRect(int x, int y, int w, int h);
+void drawRect(int x, int y, int w, int h);
+void fillOval(int x, int y, int w, int h);
+void drawImage(std::string imageName, int x, int y, int w, int h);
+void drawText(std::string text, int x, int y, float scale);
+void loadImage(std::string textureName, std::string textureLoc, bool hasTransparency);
+void loadFont(std::string fontName, std::string fontLoc);
+void setFont(std::string font);
+
+void loadSoundEffect(std::string name, std::string loc);
+void playSoundEffect(std::string effect);
+void loadSong(std::string name, std::string loc);
+void playSong(std::string song);
+
 GameEngine::GameEngine() {
 	deltaTime = 0;	
 	window = NULL;
@@ -25,26 +47,15 @@ GameEngine::GameEngine() {
 	initGLEW();	
 
 	renderer = new Renderer(window);
+	audioPlayer = new AudioPlayer();
 }
 
 GameEngine::~GameEngine() {
 	delete window;
 	delete renderer;
+	delete audioPlayer;
 	delete gameEngineInstance;
 	SDL_Quit();
-}
-
-GameEngine* GameEngine::getInstance() {
-	if (!gameEngineInstance) {
-		gameEngineInstance = new GameEngine();
-	}
-	return gameEngineInstance;
-}
-
-void GameEngine::initSDL(){
-	if(0 != SDL_Init(SDL_INIT_EVERYTHING)){
-		std::cout << "Error initializing SDL/n";
-	}
 }
 
 void GameEngine::initGameWindow(){
@@ -69,7 +80,6 @@ void GameEngine::loadGame(Game* game){
 	window->setWindowSize(w, h);
 	renderer->setDimensions((float)w, (float)h);
 	window->setWindowTitle(currentGame->getTitle());
-	window->setBackgroundColor(0.0f, 1.0f, 0.0f);
 	window->centerWindow();
 	window->setVisible(true);
 }
@@ -87,37 +97,37 @@ void GameEngine::startGame() {
 void GameEngine::runGameLoop(){
 	bool quit = false;
 		 
-		SDL_Event event;
-	
-		int startTime = 0;
-		int endTime = 0;
+	SDL_Event event;
 
-    	while(!quit){
-			startTime = SDL_GetTicks();
-	
-			SDL_PumpEvents();
-			const Uint8* keys = SDL_GetKeyboardState(NULL);
+	int startTime = 0;
+	int endTime = 0;
 
-			if(keys[SDL_SCANCODE_ESCAPE]){
-				quit = true;
-			}		
+	while(!quit){
+		startTime = SDL_GetTicks();
 
-			while(SDL_PollEvent(&event)){
-            	if( event.type == SDL_QUIT ){
-            		quit = true;
-           		}
+		SDL_PumpEvents();
+		const Uint8* keys = SDL_GetKeyboardState(NULL);
 
-			}
+		if(keys[SDL_SCANCODE_ESCAPE]){
+			quit = true;
+		}		
 
-			window->refresh();
-			currentGame->update();	
+		while(SDL_PollEvent(&event)){
+        	if( event.type == SDL_QUIT ){
+        		quit = true;
+       		}
 
-			endTime = SDL_GetTicks();
-			deltaTime = (float)(startTime - endTime) / 1000.0f;
 		}
+
+		window->refresh();
+		currentGame->update();	
+
+		endTime = SDL_GetTicks();
+		deltaTime = (float)(endTime - startTime) / 1000.0f;
+	}
 }
 
-const Uint8* GameEngine::getKeyState(){
+const Uint8* GameEngine::getKeys(){
 	return SDL_GetKeyboardState(NULL);
 }
 
@@ -129,7 +139,86 @@ int GameEngine::getWindowHeight(){
 	return window->getWindowHeight();
 }
 
+GameEngine* GameEngine::getInstance() {
+	if (!gameEngineInstance) {
+		gameEngineInstance = new GameEngine();
+	}
+	return gameEngineInstance;
+}
 
+const Uint8* GameEngine::getKeyState(){
+	return GameEngine::getInstance()->getKeys();
+}
+
+void GameEngine::setColor(int r, int g, int b){
+	GameEngine::getInstance()->getRenderer()->setColor(r, g, b);
+}
+
+void GameEngine::setColor(float r, float g, float b){
+	GameEngine::getInstance()->getRenderer()->setColor(r, g, b);
+}
+
+void GameEngine::setBackgroundColor(int r, int g, int b){
+	GameEngine::getInstance()->getGameWindow()->setBackgroundColor(r, g, b);
+}
+
+void GameEngine::setBackgroundColor(float r, float g, float b){
+	GameEngine::getInstance()->getGameWindow()->setBackgroundColor(r, g, b);
+}
+
+void GameEngine::fillRect(int x, int y, int w, int h){
+	GameEngine::getInstance()->getRenderer()->fillRect(x, y, w, h);
+}
+
+void GameEngine::drawRect(int x, int y, int w, int h){
+	GameEngine::getInstance()->getRenderer()->drawRect(x, y, w, h);
+}
+
+void GameEngine::fillOval(int x, int y, int w, int h){
+	GameEngine::getInstance()->getRenderer()->fillOval(x, y, w, h);
+}
+
+void GameEngine::drawImage(std::string imageName, int x, int y, int w, int h){
+	GameEngine::getInstance()->getRenderer()->drawImage(imageName, x, y, w, h);
+}
+
+void GameEngine::drawText(std::string text, int x, int y, float scale){
+	GameEngine::getInstance()->getRenderer()->drawText(text, x, y, scale);
+}
+
+void GameEngine::loadImage(std::string textureName, std::string textureLoc, bool hasTransparency){
+	GameEngine::getInstance()->getRenderer()->loadImage(textureName, textureLoc, hasTransparency);
+}
+
+void GameEngine::loadFont(std::string fontName, std::string fontLoc){
+	GameEngine::getInstance()->getRenderer()->loadFont(fontName, fontLoc);
+}
+
+void GameEngine::setFont(std::string font){
+	GameEngine::getInstance()->getRenderer()->setFont(font);
+}
+
+void GameEngine::loadSoundEffect(std::string name, std::string loc){
+	GameEngine::getInstance()->getAudioPlayer()->loadSoundEffect(name, loc);
+}
+
+void GameEngine::playSoundEffect(std::string effect){
+	GameEngine::getInstance()->getAudioPlayer()->playSoundEffect(effect);
+}
+
+void GameEngine::loadSong(std::string name, std::string loc){
+	GameEngine::getInstance()->getAudioPlayer()->loadSong(name, loc);
+}
+
+void GameEngine::playSong(std::string song){
+	GameEngine::getInstance()->getAudioPlayer()->playSong(song);
+}
+
+void GameEngine::initSDL(){
+	if(0 != SDL_Init(SDL_INIT_EVERYTHING)){
+		std::cout << "Error initializing SDL/n";
+	}
+}
 
 
 

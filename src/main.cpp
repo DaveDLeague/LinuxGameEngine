@@ -1,4 +1,3 @@
-
 #include "GameEngine/GameEngine.h"
 #include "PongGame.h"
 
@@ -7,6 +6,6 @@ int main(){
 	GameEngine::getInstance()->loadGame(&g);
 	GameEngine::getInstance()->startGame();
 
-
 	return 0;
 }
+

@@ -1,6 +1,6 @@
 CC=g++
 OUT=-o ../build
-LIBS=-lSDL2 -lGLEW -lGL -lfreetype
+LIBS=-lSDL2 -lSDL2_mixer -lGLEW -lGL -lfreetype
 BIN=*.o 
 
 build: source

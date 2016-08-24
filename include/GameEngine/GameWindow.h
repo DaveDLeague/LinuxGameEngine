@@ -14,6 +14,7 @@ public:
 	
 	void refresh();
 	void setVisible(bool v);
+	void setBackgroundColor(int r, int g, int b);
 	void setBackgroundColor(float r, float g, float b);
 	void setWindowWidth(int w);
 	void setWindowHeight(int h);

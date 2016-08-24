@@ -1,5 +1,6 @@
 #pragma once
 
+#include "GameEngine/GameEngine.h"
 #include "GameEngine/GameObject.h"
 #include "GameEngine/CollisionBox.h"
 

@@ -22,7 +22,7 @@ public:
 	TextRenderer();
 	virtual ~TextRenderer();
 
-	void renderText(std::string text, int x, int y, int size, glm::vec3 color);
+	void renderText(std::string text, int x, int y, float size, glm::vec3 color);
 	void setDimensions(float w, float h);
 	void loadFont(std::string fontName, std::string fontLoc);
 	void setFont(std::string);

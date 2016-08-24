@@ -45,6 +45,10 @@ void GameWindow::centerWindow(){
 	SDL_SetWindowPosition(window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
 }
 
+void GameWindow::setBackgroundColor(int r, int g, int b){
+	glClearColor((float)r / 255.0f, (float)g / 255.0f, (float)b / 255.0f, 1.0);
+}
+
 void GameWindow::setBackgroundColor(float r, float g, float b){
 	glClearColor(r, g, b, 1.0);
 }

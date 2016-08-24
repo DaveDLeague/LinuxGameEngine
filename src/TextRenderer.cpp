@@ -85,7 +85,7 @@ void TextRenderer::setFont(std::string font){
 	currentFont = font;
 }
 
-void TextRenderer::renderText(std::string text, int x, int y, int scale, glm::vec3 color){
+void TextRenderer::renderText(std::string text, int x, int y, float scale, glm::vec3 color){
 	glUseProgram(shader->getProgram());
 
 	glUniform4f(colorUniLoc, color.x, color.y, color.z, 1.0f);

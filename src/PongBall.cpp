@@ -17,6 +17,7 @@ void PongBall::update(){
 	if(cbox->isColliding()){
 		xspeed = -xspeed;
 		cbox->update(x + xspeed, y + yspeed, w, h);
+		GameEngine::playSoundEffect("bonk");
 	}else{
 		x += xspeed;
 		y += yspeed;
@@ -24,9 +25,11 @@ void PongBall::update(){
 
 	if(x <= 0 || x >= GameEngine::getInstance()->getWindowWidth() - w){ 
 		xspeed = -xspeed; 
+		GameEngine::playSoundEffect("bonk");
 	}
 	if(y <= 0 || y >= GameEngine::getInstance()->getWindowHeight() - h){
 		yspeed = -yspeed;
+		GameEngine::playSoundEffect("bonk");
 	}
 }
 
@@ -43,4 +46,6 @@ void PongBall::init(){
 	cbox = new CollisionBox(x, y, w, h);
 	xspeed = SPEED;
 	yspeed = SPEED;
+
+	GameEngine::loadSoundEffect("bonk", "../LinuxGameEngine/res/sounds/sound.wav");
 }

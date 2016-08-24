@@ -11,7 +11,7 @@ PongPaddle::~PongPaddle(){
 }
 
 void PongPaddle::update(){
-	const Uint8* keys = GameEngine::getInstance()->getKeyState();
+	const Uint8* keys = GameEngine::getKeyState();
 
 	cbox->update(x, y, w, h);
 
@@ -30,10 +30,12 @@ void PongPaddle::update(){
 
 void PongPaddle::draw(){
 	GameEngine::getInstance()->getRenderer()->setColor(0.0f, 0.0f, 1.0f);
-	GameEngine::getInstance()->getRenderer()->fillRect(x, y, w, h);
+	GameEngine::getInstance()->getRenderer()->drawImage("planet", x, y, w, h);
 }
 
 void PongPaddle::init(){
 	cbox = new CollisionBox(x, y, w, h);
 	speed = 6;
+
+	GameEngine::getInstance()->getRenderer()->loadImage("planet", "../LinuxGameEngine/res/planet.png", false);
 }

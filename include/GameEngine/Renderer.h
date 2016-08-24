@@ -26,9 +26,11 @@ public:
 	void drawRect(int x, int y, int w, int h);
 	void fillOval(int x, int y, int w, int h);
 	void drawImage(std::string imageName, int x, int y, int w, int h);
-	void drawText(std::string text, int x, int y);
+	void drawText(std::string text, int x, int y, float scale);
 	void setDimensions(float w, float h);	
-	void loadTexture(std::string textureName, std::string textureLoc, bool hasTransparency);
+	void loadImage(std::string textureName, std::string textureLoc, bool hasTransparency);
+	void loadFont(std::string fontName, std::string fontLoc);
+	void setFont(std::string font);	
 
 	void setStrokeWidth(int w) { strokeWidth = w; }
 
