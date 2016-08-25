@@ -15,17 +15,20 @@ void PongPaddle::update(){
 
 	cbox->update(x, y, w, h);
 
-	if(keys[GameEngine::UP_KEY] || keys[GameEngine::W_KEY]){
+	/*if(keys[GameEngine::UP_KEY] || keys[GameEngine::W_KEY]){
 		y += speed;	
 	}
 	if(keys[GameEngine::DOWN_KEY] || keys[GameEngine::S_KEY]){
 		y -= speed;	
-	}
+	}*/
+
+	y += speed * -GameEngine::GAMEPAD1_AXIS_LEFT_Y;
 
 	if(y <= 0){ y = 0; }
 	if(y >= GameEngine::getInstance()->getWindowHeight() - h){
 		y = GameEngine::getInstance()->getWindowHeight() - h;
 	}
+
 }
 
 void PongPaddle::draw(){

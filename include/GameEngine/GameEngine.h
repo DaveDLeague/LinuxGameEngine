@@ -57,6 +57,27 @@ public:
 	const static int S_KEY;
 	const static int D_KEY;
 
+	static bool GAMEPAD1_A;
+	static bool GAMEPAD1_B;
+	static bool GAMEPAD1_X;
+	static bool GAMEPAD1_Y;
+	static bool GAMEPAD1_BACK;
+	static bool GAMEPAD1_START;
+	static bool GAMEPAD1_UP;
+	static bool GAMEPAD1_DOWN;
+	static bool GAMEPAD1_LEFT;
+	static bool GAMEPAD1_RIGHT;
+	static bool GAMEPAD1_LB;
+	static bool GAMEPAD1_RB;
+	static bool GAMEPAD1_L3;
+	static bool GAMEPAD1_R3;
+	static float GAMEPAD1_LT;
+	static float GAMEPAD1_RT;
+	static float GAMEPAD1_AXIS_LEFT_X;
+	static float GAMEPAD1_AXIS_LEFT_Y;
+	static float GAMEPAD1_AXIS_RIGHT_X;
+	static float GAMEPAD1_AXIS_RIGHT_Y;
+
 	int getDeltaTime(){ return deltaTime; }
 
 	Renderer* getRenderer(){ return renderer; }
@@ -75,10 +96,16 @@ private:
 	static GameEngine* gameEngineInstance;
 	Uint8* keyState;	
 
+	SDL_GameController* controller1;
+
 	void initSDL();
 	void initGameWindow();
 	void initGLEW();
 	void runGameLoop();
+	void initGameControllers();
+
+	void handleControllerButtonEvent();
+	void handleControllerAxisEvent();
 
 	GameEngine();
 
