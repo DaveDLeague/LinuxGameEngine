@@ -2,7 +2,7 @@
 
 CollisionBox::CollisionBox(int x, int y, int w, int h)
 :GameObject(x, y, w, h){
-
+	init();
 }
 
 
@@ -15,8 +15,13 @@ void CollisionBox::checkCollision(GameObject o){
 	if(ox < (x + w) && (ox + ow) > x &&
 	   oy < (y + h) && (oy + oh) > y){
 		collision = true;
+
+		xOverlap = (ox + ow) - x;
+		yOverlap = (oy + oh) - h;
 	}else{
 		collision = false;
+		xOverlap = 0;
+		yOverlap = 0;
 	}
 
 }
@@ -40,6 +45,8 @@ void CollisionBox::draw(Renderer* r){
 
 void CollisionBox::init(){
 	collision = false;
+	xOverlap = 0;
+	yOverlap = 0;
 }
 
 

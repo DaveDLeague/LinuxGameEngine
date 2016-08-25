@@ -5,7 +5,7 @@ PongGame::PongGame()
 	currentState = MENU_STATE;
 	GameEngine::setBackgroundColor(0.8f, 0.9f, 1.0f);
 	paddle = new PongPaddle(100, 300, 50, 200);
-	ball = new PongBall(200, 300, 50, 50);
+	ball = new PongBall(500, 300, 50, 50);
 	GameEngine::loadFont("blink", "../LinuxGameEngine/res/fonts/Blink.otf");
 	GameEngine::setFont("blink");
 }

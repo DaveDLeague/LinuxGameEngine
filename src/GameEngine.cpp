@@ -37,6 +37,9 @@ void playSoundEffect(std::string effect);
 void loadSong(std::string name, std::string loc);
 void playSong(std::string song);
 
+int getWindowWidth();
+int getWindowHeight();
+
 GameEngine::GameEngine() {
 	deltaTime = 0;	
 	window = NULL;
@@ -131,14 +134,6 @@ const Uint8* GameEngine::getKeys(){
 	return SDL_GetKeyboardState(NULL);
 }
 
-int GameEngine::getWindowWidth(){
-	return window->getWindowWidth();
-}
-
-int GameEngine::getWindowHeight(){
-	return window->getWindowHeight();
-}
-
 GameEngine* GameEngine::getInstance() {
 	if (!gameEngineInstance) {
 		gameEngineInstance = new GameEngine();
@@ -212,6 +207,14 @@ void GameEngine::loadSong(std::string name, std::string loc){
 
 void GameEngine::playSong(std::string song){
 	GameEngine::getInstance()->getAudioPlayer()->playSong(song);
+}
+
+int GameEngine::getWindowWidth(){
+	return GameEngine::getInstance()->getGameWindow()->getWindowWidth();
+}
+
+int GameEngine::getWindowHeight(){
+	return GameEngine::getInstance()->getGameWindow()->getWindowHeight();
 }
 
 void GameEngine::initSDL(){

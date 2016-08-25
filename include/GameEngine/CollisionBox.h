@@ -12,9 +12,14 @@ class CollisionBox: public GameObject{
 		virtual void checkCollision(GameObject o);
 	
 		bool isColliding(){ return collision; }
+		int getXOverlap(){ return xOverlap; }
+		int getYOverlap(){ return yOverlap; }
 
 	private:
 		bool collision;
+		
+		int xOverlap;
+		int yOverlap;
 
 		virtual void init();
 

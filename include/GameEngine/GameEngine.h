@@ -35,13 +35,13 @@ public:
 	static void loadSong(std::string name, std::string loc);
 	static void playSong(std::string song);
 
+	static int getWindowWidth();
+	static int getWindowHeight();
+
 	void startGame();
 	void stopGame();
 
 	void loadGame(Game* game);
-	
-	int getWindowWidth();
-	int getWindowHeight();
 
 	const Uint8* getKeys();
 

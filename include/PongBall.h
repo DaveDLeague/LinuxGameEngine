@@ -1,5 +1,8 @@
 #pragma once
 
+#include <math.h>
+#include <stdlib.h>
+#include <time.h>
 #include "GameEngine/GameEngine.h"
 #include "GameEngine/GameObject.h"
 #include "GameEngine/CollisionBox.h"
@@ -15,9 +18,12 @@ class PongBall : public GameObject {
 		void checkCollision(GameObject o);
 	private:
 		CollisionBox* cbox;
-	
-		int xspeed;
-		int yspeed;
+			
+		int nextX;
+		int nextY;			
+			
+		int speed;
+		float angle;		
 
 		void init();
 
