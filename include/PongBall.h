@@ -15,7 +15,7 @@ class PongBall : public GameObject {
 		virtual void update();
 		virtual void draw();
 
-		void checkCollision(GameObject o);
+		void checkCollision(GameObject* o);
 	private:
 		CollisionBox* cbox;
 			

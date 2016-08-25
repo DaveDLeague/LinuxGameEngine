@@ -34,6 +34,8 @@ void PongPaddle::draw(){
 }
 
 void PongPaddle::init(){
+	tag = "paddle";
+	
 	cbox = new CollisionBox(x, y, w, h);
 	speed = 6;
 

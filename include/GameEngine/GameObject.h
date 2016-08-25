@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include "GameEngine/GameEngine.h"
 #include "GameEngine/Renderer.h"
 
@@ -17,13 +18,16 @@ public:
 	int getWidth(){ return w; }
 	int getHeight(){ return h; }	 
 	
+	std::string getTag(){ return tag; }
+	void setTag(std::string t){ tag = t; }
 
 protected:
 	int x;
 	int y;
 	int w;
 	int h;
-
+	
+	std::string tag;
 private:
 	virtual void init(int x, int y, int w, int h);
 };

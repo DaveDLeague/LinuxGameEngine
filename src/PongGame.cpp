@@ -1,11 +1,17 @@
 #include "PongGame.h"
 
+const int WIDTH = 900;
+const int HEIGHT = 600;
+
 PongGame::PongGame()
-:Game(900, 600, "Pong"){
+:Game(WIDTH, HEIGHT, "Pong"){
 	currentState = MENU_STATE;
 	GameEngine::setBackgroundColor(0.8f, 0.9f, 1.0f);
 	paddle = new PongPaddle(100, 300, 50, 200);
 	ball = new PongBall(500, 300, 50, 50);
+	p1Meter = new StatusMeter(50, 500, 200, 50);
+	base1 = new PongBase(0, 0, 25, HEIGHT);
+
 	GameEngine::loadFont("blink", "../LinuxGameEngine/res/fonts/Blink.otf");
 	GameEngine::setFont("blink");
 }
@@ -13,6 +19,8 @@ PongGame::PongGame()
 PongGame::~PongGame(){
 	delete paddle;
 	delete ball;
+	delete p1Meter;
+	delete base1;
 }
 
 void PongGame::update(){
@@ -46,12 +54,15 @@ void PongGame::runGameState(){
 	const Uint8* keys = GameEngine::getKeyState();
 	paddle->update();
 	ball->update();
-	ball->checkCollision(*paddle);
+	ball->checkCollision(paddle);
+	ball->checkCollision(base1);
 	paddle->draw();
 	ball->draw();
-
+	p1Meter->draw();
+	base1->draw();
 	if(keys[GameEngine::SPACE_KEY]){
-		currentState = MENU_STATE;
+		//currentState = MENU_STATE;
+		p1Meter->incrementCurrentStatus(-1);
 	}
 }
 

@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <string>
+#include <ctime>
 #include "SDL2/SDL.h"
 #include "GL/glew.h"
 #include "GameEngine/Renderer.h"

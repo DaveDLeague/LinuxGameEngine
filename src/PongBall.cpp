@@ -1,5 +1,5 @@
 #include "PongBall.h"
-
+#include "PongBase.h"
 const int SPEED = 10;
 const double PI = 3.1415926535897;
 
@@ -29,9 +29,9 @@ void PongBall::update(){
 	y = nextY;
 
 	if(x < 0) { x = 0; }
-	if(x + w > GameEngine::getWindowWidth()) { x = GameEngine::getWindowWidth() - w; }
+	else if(x + w > GameEngine::getWindowWidth()) { x = GameEngine::getWindowWidth() - w; }
 	if(y < 0) { y = 0; }
-	if(y + h > GameEngine::getWindowHeight()) { y = GameEngine::getWindowHeight() - h; }
+	else if(y + h > GameEngine::getWindowHeight()) { y = GameEngine::getWindowHeight() - h; }
 }
 
 void PongBall::draw(){
@@ -40,22 +40,32 @@ void PongBall::draw(){
 }
 
 float spdflt = 0.0f;//DELET THIS SOON!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-void PongBall::checkCollision(GameObject o){
-	cbox->checkCollision(o);
-
-	int cx = x + (w / 2);
-	int cy = y + (h / 2);
-	int ocx = o.getX() + (o.getWidth() / 2);
-	int ocy = o.getY() + (o.getHeight() / 2);
+void PongBall::checkCollision(GameObject* o){
+	cbox->checkCollision(*o);
 
 	if(cbox->isColliding()){
-		angle = (PI / 2) - (atan2((cy - ocy), (cx - ocx)));
-		spdflt += 0.1f;
-		speed += spdflt;
+		int cx = x + (w / 2);
+		int cy = y + (h / 2);
+		int ocx = o->getX() + (o->getWidth() / 2);
+		int ocy = o->getY() + (o->getHeight() / 2);
+	
+		if(o->getTag().compare("paddle") == 0){ 
+			angle = (PI / 2) - (atan2((cy - ocy), (cx - ocx)));
+			spdflt += 0.1f;
+			speed += spdflt;
+		}else if(o->getTag().compare("base") == 0){ 
+			PongBase *b = static_cast<PongBase*>(o);			
+			angle = (2 * PI) - angle;
+			x += (speed * sin(angle));
+			y += (speed * cos(angle));
+			b->registerHit();
+			b = NULL;
+		}
 	}
 }
 
 void PongBall::init(){
+	tag = "ball";
 	cbox = new CollisionBox(x, y, w, h);
 	angle = PI / 4;
 	speed = SPEED;

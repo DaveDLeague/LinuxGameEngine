@@ -102,12 +102,16 @@ void GameEngine::runGameLoop(){
 		 
 	SDL_Event event;
 
-	int startTime = 0;
-	int endTime = 0;
+	clock_t strt = clock();
 
 	while(!quit){
-		startTime = SDL_GetTicks();
-
+		strt = clock();
+		while(clock() - strt <= 10000 / 100){
+			SDL_Delay(1);	
+		}
+		
+		//startTime = SDL_GetTicks();
+		
 		SDL_PumpEvents();
 		const Uint8* keys = SDL_GetKeyboardState(NULL);
 
@@ -124,9 +128,6 @@ void GameEngine::runGameLoop(){
 
 		window->refresh();
 		currentGame->update();	
-
-		endTime = SDL_GetTicks();
-		deltaTime = (float)(endTime - startTime) / 1000.0f;
 	}
 }
 
