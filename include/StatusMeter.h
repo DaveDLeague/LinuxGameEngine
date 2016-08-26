@@ -8,8 +8,18 @@ public:
 	virtual ~StatusMeter();
 	virtual void draw();
 	
-	void setMaxStatus(int max){ maxStatus = max; }
-	void setCurrentStatus(int sts){ currentStatus = sts; }
+	void setMaxStatus(int max){ 
+		if(max < 0) { max = 0; }		
+		maxStatus = max; 
+	}
+	void setCurrentStatus(int sts){ 
+		if(sts < 0) { 
+			sts = 0; 
+		}else if(sts > maxStatus){ 
+			sts = maxStatus; 
+		}	
+		currentStatus = sts; 
+	}
 	void incrementCurrentStatus(int amt){ 
 		currentStatus += amt; 
 		if(currentStatus < 0) { 
@@ -18,7 +28,9 @@ public:
 			currentStatus = maxStatus; 
 		}	
 	}
+	void invertMeter(bool i){ inverted = i; }
 private:
+	bool inverted;
 	int maxStatus;
 	int currentStatus;
 

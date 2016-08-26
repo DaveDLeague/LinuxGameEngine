@@ -36,6 +36,27 @@ float GameEngine::GAMEPAD1_AXIS_LEFT_Y;
 float GameEngine::GAMEPAD1_AXIS_RIGHT_X;
 float GameEngine::GAMEPAD1_AXIS_RIGHT_Y;
 
+bool GameEngine::GAMEPAD2_A;
+bool GameEngine::GAMEPAD2_B;
+bool GameEngine::GAMEPAD2_X;
+bool GameEngine::GAMEPAD2_Y;
+bool GameEngine::GAMEPAD2_BACK;
+bool GameEngine::GAMEPAD2_START;
+bool GameEngine::GAMEPAD2_UP;
+bool GameEngine::GAMEPAD2_DOWN;
+bool GameEngine::GAMEPAD2_LEFT;
+bool GameEngine::GAMEPAD2_RIGHT;
+bool GameEngine::GAMEPAD2_LB;
+bool GameEngine::GAMEPAD2_RB;
+bool GameEngine::GAMEPAD2_L3;
+bool GameEngine::GAMEPAD2_R3;
+float GameEngine::GAMEPAD2_LT;
+float GameEngine::GAMEPAD2_RT;
+float GameEngine::GAMEPAD2_AXIS_LEFT_X;
+float GameEngine::GAMEPAD2_AXIS_LEFT_Y;
+float GameEngine::GAMEPAD2_AXIS_RIGHT_X;
+float GameEngine::GAMEPAD2_AXIS_RIGHT_Y;
+
 GameEngine* GameEngine::gameEngineInstance;
 
 const Uint8* getKeyState();
@@ -64,7 +85,9 @@ int getWindowHeight();
 GameEngine::GameEngine() {
 	deltaTime = 0;	
 	window = NULL;
-	renderer = NULL;	
+	renderer = NULL;
+	controller1 = NULL;
+	controller2 = NULL;	
 
 	initSDL();
 	initGameWindow();
@@ -80,7 +103,9 @@ GameEngine::~GameEngine() {
 	delete renderer;
 	delete audioPlayer;
 	delete gameEngineInstance;
-	SDL_GameControllerClose(controller1);
+	if(controller1 != NULL){ SDL_GameControllerClose(controller1); }
+	if(controller2 != NULL){ SDL_GameControllerClose(controller2); }
+	
 	SDL_Quit();
 }
 
@@ -102,8 +127,13 @@ void GameEngine::initGLEW(){
 void GameEngine::initGameControllers(){
 	for(int i = 0; i < SDL_NumJoysticks(); i++){
 		if(SDL_IsGameController(i)){
-			controller1 = SDL_GameControllerOpen(i);
-			break;
+			if(controller1 == NULL){
+				controller1 = SDL_GameControllerOpen(i);
+			}else if(controller2 == NULL){
+				controller2 = SDL_GameControllerOpen(i);
+			}else{
+				break;
+			}
 		}
 	}
 }
@@ -183,6 +213,21 @@ void GameEngine::handleControllerButtonEvent(){
 	GAMEPAD1_RB = SDL_GameControllerGetButton(controller1, SDL_CONTROLLER_BUTTON_RIGHTSHOULDER);
 	GAMEPAD1_L3 = SDL_GameControllerGetButton(controller1, SDL_CONTROLLER_BUTTON_LEFTSTICK);
 	GAMEPAD1_R3 = SDL_GameControllerGetButton(controller1, SDL_CONTROLLER_BUTTON_RIGHTSTICK);
+
+	GAMEPAD2_A = SDL_GameControllerGetButton(controller2, SDL_CONTROLLER_BUTTON_A);
+	GAMEPAD2_B = SDL_GameControllerGetButton(controller2, SDL_CONTROLLER_BUTTON_B);
+	GAMEPAD2_X = SDL_GameControllerGetButton(controller2, SDL_CONTROLLER_BUTTON_X);
+	GAMEPAD2_Y = SDL_GameControllerGetButton(controller2, SDL_CONTROLLER_BUTTON_Y);
+	GAMEPAD2_BACK = SDL_GameControllerGetButton(controller2, SDL_CONTROLLER_BUTTON_BACK);
+	GAMEPAD2_START = SDL_GameControllerGetButton(controller2, SDL_CONTROLLER_BUTTON_START);
+	GAMEPAD2_UP = SDL_GameControllerGetButton(controller2, SDL_CONTROLLER_BUTTON_DPAD_UP);
+	GAMEPAD2_DOWN = SDL_GameControllerGetButton(controller2, SDL_CONTROLLER_BUTTON_DPAD_DOWN);
+	GAMEPAD2_LEFT = SDL_GameControllerGetButton(controller2, SDL_CONTROLLER_BUTTON_DPAD_LEFT);
+	GAMEPAD2_RIGHT = SDL_GameControllerGetButton(controller2, SDL_CONTROLLER_BUTTON_DPAD_RIGHT);
+	GAMEPAD2_LB = SDL_GameControllerGetButton(controller2, SDL_CONTROLLER_BUTTON_LEFTSHOULDER);
+	GAMEPAD2_RB = SDL_GameControllerGetButton(controller2, SDL_CONTROLLER_BUTTON_RIGHTSHOULDER);
+	GAMEPAD2_L3 = SDL_GameControllerGetButton(controller2, SDL_CONTROLLER_BUTTON_LEFTSTICK);
+	GAMEPAD2_R3 = SDL_GameControllerGetButton(controller2, SDL_CONTROLLER_BUTTON_RIGHTSTICK);
 }
 
 void GameEngine::handleControllerAxisEvent(){
@@ -192,6 +237,13 @@ void GameEngine::handleControllerAxisEvent(){
 	GAMEPAD1_AXIS_LEFT_Y = SDL_GameControllerGetAxis(controller1, SDL_CONTROLLER_AXIS_LEFTY) / 32767.0f;
 	GAMEPAD1_AXIS_RIGHT_X = SDL_GameControllerGetAxis(controller1, SDL_CONTROLLER_AXIS_RIGHTX) / 32767.0f;
 	GAMEPAD1_AXIS_RIGHT_Y = SDL_GameControllerGetAxis(controller1, SDL_CONTROLLER_AXIS_RIGHTY) / 32767.0f;
+
+	GAMEPAD2_LT = SDL_GameControllerGetAxis(controller2, SDL_CONTROLLER_AXIS_TRIGGERLEFT) / 32767.0f;
+	GAMEPAD2_RT = SDL_GameControllerGetAxis(controller2, SDL_CONTROLLER_AXIS_TRIGGERRIGHT) / 32767.0f;
+	GAMEPAD2_AXIS_LEFT_X = SDL_GameControllerGetAxis(controller2, SDL_CONTROLLER_AXIS_LEFTX) / 32767.0f;
+	GAMEPAD2_AXIS_LEFT_Y = SDL_GameControllerGetAxis(controller2, SDL_CONTROLLER_AXIS_LEFTY) / 32767.0f;
+	GAMEPAD2_AXIS_RIGHT_X = SDL_GameControllerGetAxis(controller2, SDL_CONTROLLER_AXIS_RIGHTX) / 32767.0f;
+	GAMEPAD2_AXIS_RIGHT_Y = SDL_GameControllerGetAxis(controller2, SDL_CONTROLLER_AXIS_RIGHTY) / 32767.0f;
 }
 
 const Uint8* GameEngine::getKeys(){

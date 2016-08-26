@@ -1,10 +1,13 @@
 #pragma once
 
 #include "GameEngine/Game.h"
-#include "StatusMeter.h"
+//#include "StatusMeter.h"
+#include "PongHUD.h"
 #include "PongPaddle.h"
+#include "PongPaddle2.h"
 #include "PongBall.h"
 #include "PongBase.h"
+#include "PongBase2.h"
 
 class PongGame: public Game{
 public:
@@ -26,8 +29,11 @@ private:
 	void runGameState();
 	void runEndState();
 
+	PongHUD* hud;
 	PongPaddle* paddle;
+	PongPaddle2* paddle2;
 	PongBall* ball;
-	StatusMeter* p1Meter;
+	//StatusMeter* p1Meter;
 	PongBase* base1;
+	PongBase2* base2;
 };

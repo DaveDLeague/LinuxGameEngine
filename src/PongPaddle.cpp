@@ -15,32 +15,32 @@ void PongPaddle::update(){
 
 	cbox->update(x, y, w, h);
 
-	/*if(keys[GameEngine::UP_KEY] || keys[GameEngine::W_KEY]){
+	if(keys[GameEngine::W_KEY]){
 		y += speed;	
 	}
-	if(keys[GameEngine::DOWN_KEY] || keys[GameEngine::S_KEY]){
+	if(keys[GameEngine::S_KEY]){
 		y -= speed;	
-	}*/
+	}
 
 	y += speed * -GameEngine::GAMEPAD1_AXIS_LEFT_Y;
 
 	if(y <= 0){ y = 0; }
-	if(y >= GameEngine::getInstance()->getWindowHeight() - h){
-		y = GameEngine::getInstance()->getWindowHeight() - h;
+	if(y >= GameEngine::getWindowHeight() - h){
+		y = GameEngine::getWindowHeight() - h;
 	}
 
 }
 
 void PongPaddle::draw(){
-	GameEngine::getInstance()->getRenderer()->setColor(0.0f, 0.0f, 1.0f);
-	GameEngine::getInstance()->getRenderer()->drawImage("planet", x, y, w, h);
+	GameEngine::setColor(0.0f, 0.0f, 1.0f);
+	GameEngine::drawImage("planet", x, y, w, h);
 }
 
 void PongPaddle::init(){
 	tag = "paddle";
 	
 	cbox = new CollisionBox(x, y, w, h);
-	speed = 6;
+	speed = 10;
 
 	GameEngine::getInstance()->getRenderer()->loadImage("planet", "../LinuxGameEngine/res/planet.png", false);
 }

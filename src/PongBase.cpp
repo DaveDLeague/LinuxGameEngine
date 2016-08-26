@@ -15,9 +15,13 @@ void PongBase::draw(){
 }
 
 void PongBase::registerHit(){
-	std::cout << "OUCH!!!\n";
+	currentStatus -= 1;
+	hud->setP1CurrentStatus(currentStatus);
 }
 
 void PongBase::init(){
 	tag = "base";
+
+	maxStatus = 10;
+	currentStatus = maxStatus;
 }

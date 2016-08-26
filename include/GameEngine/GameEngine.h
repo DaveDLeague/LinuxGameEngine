@@ -78,6 +78,27 @@ public:
 	static float GAMEPAD1_AXIS_RIGHT_X;
 	static float GAMEPAD1_AXIS_RIGHT_Y;
 
+	static bool GAMEPAD2_A;
+	static bool GAMEPAD2_B;
+	static bool GAMEPAD2_X;
+	static bool GAMEPAD2_Y;
+	static bool GAMEPAD2_BACK;
+	static bool GAMEPAD2_START;
+	static bool GAMEPAD2_UP;
+	static bool GAMEPAD2_DOWN;
+	static bool GAMEPAD2_LEFT;
+	static bool GAMEPAD2_RIGHT;
+	static bool GAMEPAD2_LB;
+	static bool GAMEPAD2_RB;
+	static bool GAMEPAD2_L3;
+	static bool GAMEPAD2_R3;
+	static float GAMEPAD2_LT;
+	static float GAMEPAD2_RT;
+	static float GAMEPAD2_AXIS_LEFT_X;
+	static float GAMEPAD2_AXIS_LEFT_Y;
+	static float GAMEPAD2_AXIS_RIGHT_X;
+	static float GAMEPAD2_AXIS_RIGHT_Y;
+
 	int getDeltaTime(){ return deltaTime; }
 
 	Renderer* getRenderer(){ return renderer; }
@@ -97,6 +118,7 @@ private:
 	Uint8* keyState;	
 
 	SDL_GameController* controller1;
+	SDL_GameController* controller2;
 
 	void initSDL();
 	void initGameWindow();
