@@ -29,12 +29,12 @@ void PongBall::update(){
 	else if(x + w > GameEngine::getWindowWidth()) { x = GameEngine::getWindowWidth() - w; }
 	if(y < 0) { y = 0; }
 	else if(y + h > GameEngine::getWindowHeight()) { y = GameEngine::getWindowHeight() - h; }
-	if(angle < 0.01f && angle > -0.01f){
-		angle = 0.1f;
+	if(angle < 0.1f && angle > -0.1f){
+		angle = 0.2f;
 	}
 
 	if(-1 == speedTimer){ speedTimer = clock(); }
-	if(clock() - speedTimer >= 100000){ 
+	if(clock() - speedTimer >= CLOCKS_PER_SEC * 10){ 
 		speed ++;
 		speedTimer = clock(); 
 	}

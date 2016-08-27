@@ -6,7 +6,7 @@ PongBase(x, y, w, h){
 }
 
 void PongBase2::draw(){
-	GameEngine::setColor(0.75f, 0.0f, 0.0f);
+	GameEngine::setColor(0.0f, 0.75f, 0.0f);
 	GameEngine::fillRect(x, y, w, h);
 }
 

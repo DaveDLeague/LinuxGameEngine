@@ -165,13 +165,9 @@ void GameEngine::runGameLoop(){
 	SDL_Event event;
 
 	clock_t strt = clock();
+	int fps = CLOCKS_PER_SEC / 60;
 
 	while(!quit){
-		strt = clock();
-		while(clock() - strt <= 10000 / 100){
-			SDL_Delay(1);	
-		}
-		
 		SDL_PumpEvents();
 		const Uint8* keys = SDL_GetKeyboardState(NULL);
 
@@ -192,9 +188,12 @@ void GameEngine::runGameLoop(){
 				break;
 			}
 		}
-
-		window->refresh();
-		currentGame->update();	
+		if(clock() - strt >= fps){
+			window->refresh();
+			currentGame->update();	
+			strt = clock();
+		}
+		deltaTime = (float)(clock() - strt) / (float)CLOCKS_PER_SEC;
 	}
 }
 
@@ -338,7 +337,6 @@ void GameEngine::initSDL(){
 		std::cout << "Error initializing SDL/n";
 	}
 }
-
 
 
 

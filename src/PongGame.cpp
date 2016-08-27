@@ -81,7 +81,7 @@ void PongGame::runCountdownState(){
 	GameEngine::drawText("GAME     STARTING     IN:", 150, 400, 1.5f);
 
 	if(-1 == startTime){ startTime = clock(); }
-	if(clock() - startTime >= 30000){ 
+	if(clock() - startTime >= CLOCKS_PER_SEC){ 
 		countdown--;
 		startTime = clock();
 	}

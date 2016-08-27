@@ -26,7 +26,7 @@ void PongPaddle2::update(){
 }
 
 void PongPaddle2::draw(){
-	GameEngine::setColor(0.0f, 1.0f, 1.0f);
+	GameEngine::setColor(0.0f, 1.0f, 0.0f);
 	GameEngine::fillRect(x, y, w, h);
 	//GameEngine::drawImage("planet", x, y, w, h);
 }
