@@ -25,3 +25,13 @@ void PongBase::init(){
 	maxStatus = 10;
 	currentStatus = maxStatus;
 }
+
+void PongBase::setCurrentStatus(int s){
+	currentStatus = s;
+	hud->setP1CurrentStatus(currentStatus);
+}
+
+void PongBase::setMaxStatus(int m){
+	maxStatus = m;
+	hud->setP1MaxStatus(maxStatus);
+}

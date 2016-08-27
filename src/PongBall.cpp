@@ -16,13 +16,10 @@ void PongBall::update(){
 	nextX = x + (speed * sin(angle));
 	nextY = y + (speed * cos(angle));
 	cbox->update(nextX, nextY, w, h);
-	
-	if((nextX + w) >= GameEngine::getWindowWidth() || nextX < 0){
-		angle = (2 * PI) - angle;
-	}
 
 	if((nextY + h) >= GameEngine::getWindowHeight() || nextY < 0){
 		angle = PI - angle;
+		GameEngine::playSoundEffect("bonk");
 	}
 	
 	x = nextX;
@@ -32,6 +29,15 @@ void PongBall::update(){
 	else if(x + w > GameEngine::getWindowWidth()) { x = GameEngine::getWindowWidth() - w; }
 	if(y < 0) { y = 0; }
 	else if(y + h > GameEngine::getWindowHeight()) { y = GameEngine::getWindowHeight() - h; }
+	if(angle < 0.01f && angle > -0.01f){
+		angle = 0.1f;
+	}
+
+	if(-1 == speedTimer){ speedTimer = clock(); }
+	if(clock() - speedTimer >= 100000){ 
+		speed ++;
+		speedTimer = clock(); 
+	}
 }
 
 void PongBall::draw(){
@@ -39,7 +45,6 @@ void PongBall::draw(){
 	GameEngine::fillOval(x, y, w, h);
 }
 
-float spdflt = 0.0f;//DELET THIS SOON!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 void PongBall::checkCollision(GameObject* o){
 	cbox->checkCollision(*o);
 
@@ -51,8 +56,7 @@ void PongBall::checkCollision(GameObject* o){
 	
 		if(o->getTag().compare("paddle") == 0){ 
 			angle = (PI / 2) - (atan2((cy - ocy), (cx - ocx)));
-			spdflt += 0.1f;
-			speed += spdflt;
+			GameEngine::playSoundEffect("tock");
 		}else if(o->getTag().compare("base") == 0){ 
 			PongBase *b = static_cast<PongBase*>(o);			
 			angle = (2 * PI) - angle;
@@ -60,8 +64,16 @@ void PongBall::checkCollision(GameObject* o){
 			y += (speed * cos(angle));
 			b->registerHit();
 			b = NULL;
+			GameEngine::playSoundEffect("smash");
 		}
 	}
+}
+
+void PongBall::reset(int x, int y){
+	this->x = x;
+	this->y = y;
+
+	speed = SPEED;
 }
 
 void PongBall::init(){
@@ -69,6 +81,8 @@ void PongBall::init(){
 	cbox = new CollisionBox(x, y, w, h);
 	angle = PI / 4;
 	speed = SPEED;
+	
+	speedTimer = -1;
 
 	nextX = x;
 	nextY = y;
@@ -76,4 +90,6 @@ void PongBall::init(){
 	srand (time(NULL));	
 
 	GameEngine::loadSoundEffect("bonk", "../LinuxGameEngine/res/sounds/sound.wav");
+	GameEngine::loadSoundEffect("tock", "../LinuxGameEngine/res/sounds/tock.wav");
+	GameEngine::loadSoundEffect("smash", "../LinuxGameEngine/res/sounds/base_hit.wav");
 }

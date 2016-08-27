@@ -14,3 +14,13 @@ void PongBase2::registerHit(){
 	currentStatus -= 1;
 	hud->setP2CurrentStatus(currentStatus);
 }
+
+void PongBase2::setCurrentStatus(int s){
+	currentStatus = s;
+	hud->setP2CurrentStatus(currentStatus);
+}
+
+void PongBase2::setMaxStatus(int m){
+	maxStatus = m;
+	hud->setP2MaxStatus(maxStatus);
+}

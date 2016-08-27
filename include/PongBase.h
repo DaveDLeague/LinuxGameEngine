@@ -12,6 +12,9 @@ public:
 	
 	void setHUD(PongHUD* h){ hud = h; }
 	int getCurrentStatus(){ return currentStatus; }
+	int getMaxStatus(){ return maxStatus; }
+	void setCurrentStatus(int s);
+	void setMaxStatus(int m);
 	
 protected:
 

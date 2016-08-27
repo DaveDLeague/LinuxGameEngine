@@ -16,7 +16,11 @@ public:
 	int getX(){ return x; }
 	int getY(){ return y; }
 	int getWidth(){ return w; }
-	int getHeight(){ return h; }	 
+	int getHeight(){ return h; }
+	void setX(int nx){ x = nx; }
+	void setY(int ny){ y = ny; }
+	void setWidth(int nw){ w = nw; }
+	void setHeight(int nh){ h = nh; }	 
 	
 	std::string getTag(){ return tag; }
 	void setTag(std::string t){ tag = t; }

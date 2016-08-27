@@ -33,7 +33,8 @@ void PongPaddle::update(){
 
 void PongPaddle::draw(){
 	GameEngine::setColor(0.0f, 0.0f, 1.0f);
-	GameEngine::drawImage("planet", x, y, w, h);
+	GameEngine::fillRect(x, y, w, h);
+	//GameEngine::drawImage("planet", x, y, w, h);
 }
 
 void PongPaddle::init(){
@@ -42,5 +43,5 @@ void PongPaddle::init(){
 	cbox = new CollisionBox(x, y, w, h);
 	speed = 10;
 
-	GameEngine::getInstance()->getRenderer()->loadImage("planet", "../LinuxGameEngine/res/planet.png", false);
+	//GameEngine::getInstance()->getRenderer()->loadImage("planet", "../LinuxGameEngine/res/planet.png", false);
 }
