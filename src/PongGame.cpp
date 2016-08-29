@@ -13,7 +13,8 @@ PongGame::PongGame()
 	countdown = 5;	
 
 	winner = "";
-	
+		
+
 	currentState = MENU_STATE;
 	GameEngine::setBackgroundColor(0.8f, 0.9f, 1.0f);
 	hud = new PongHUD();
@@ -86,10 +87,10 @@ void PongGame::runCountdownState(){
 		startTime = clock();
 	}
 	
-	std::stringstream cd;
-	cd << countdown;
-	GameEngine::drawText(cd.str(), 400, 200, 2.5f);
-
+	countdownString << countdown;
+	GameEngine::drawText(countdownString.str(), 400, 200, 2.5f);
+	countdownString.str("");
+	
 	if(countdown <= 0){ 
 		currentState = GAME_STATE; 
 		countdown = 5;

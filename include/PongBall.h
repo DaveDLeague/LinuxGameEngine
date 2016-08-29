@@ -5,6 +5,7 @@
 #include "GameEngine/GameEngine.h"
 #include "GameEngine/GameObject.h"
 #include "GameEngine/CollisionBox.h"
+#include "GameEngine/Animator.h"
 
 class PongBall : public GameObject {
 	public:
@@ -24,10 +25,13 @@ class PongBall : public GameObject {
 
 		int nextX;
 		int nextY;			
-			
+		
 		int speed;
 		float angle;		
 
 		void init();
 
+		Animation* a1;
+		Animation* a2;
+		Animator* animator;
 };

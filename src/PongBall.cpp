@@ -10,6 +10,7 @@ PongBall::PongBall(int x, int y, int w, int h)
 
 PongBall::~PongBall(){
 	delete cbox;
+	delete a1;
 }
 
 void PongBall::update(){
@@ -38,11 +39,13 @@ void PongBall::update(){
 		speed ++;
 		speedTimer = clock(); 
 	}
+	animator->update();
 }
 
 void PongBall::draw(){
-	GameEngine::setColor(1.0f, 0.0f, 0.0f);
-	GameEngine::fillOval(x, y, w, h);
+	//GameEngine::setColor(1.0f, 0.0f, 0.0f);
+	//GameEngine::fillOval(x, y, w, h);
+	GameEngine::drawImage(animator->getCurrentImage(), x, y, w, h);
 }
 
 void PongBall::checkCollision(GameObject* o){
@@ -57,6 +60,7 @@ void PongBall::checkCollision(GameObject* o){
 		if(o->getTag().compare("paddle") == 0){ 
 			angle = (PI / 2) - (atan2((cy - ocy), (cx - ocx)));
 			GameEngine::playSoundEffect("tock");
+			animator->setAnimation("a2");
 		}else if(o->getTag().compare("base") == 0){ 
 			PongBase *b = static_cast<PongBase*>(o);			
 			angle = (2 * PI) - angle;
@@ -65,6 +69,7 @@ void PongBall::checkCollision(GameObject* o){
 			b->registerHit();
 			b = NULL;
 			GameEngine::playSoundEffect("smash");
+			animator->setAnimation("a1");
 		}
 	}
 }
@@ -89,6 +94,15 @@ void PongBall::init(){
 
 	srand (time(NULL));	
 
+	animator = new Animator();
+	a1 = new Animation(2);
+	a2 = new Animation();
+	a1->loadImage("../LinuxGameEngine/res/planet.png");
+	a1->loadImage("../LinuxGameEngine/res/dice.png");
+
+	a2->loadImage("../LinuxGameEngine/res/land.jpg");	
+	animator->loadAnimation("a1", a1);
+	animator->loadAnimation("a2", a2);
 	GameEngine::loadSoundEffect("bonk", "../LinuxGameEngine/res/sounds/sound.wav");
 	GameEngine::loadSoundEffect("tock", "../LinuxGameEngine/res/sounds/tock.wav");
 	GameEngine::loadSoundEffect("smash", "../LinuxGameEngine/res/sounds/base_hit.wav");

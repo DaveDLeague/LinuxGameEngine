@@ -2,6 +2,7 @@
 
 #include <stdlib.h>
 #include <string>
+#include <sstream>
 #include <ctime>
 #include "GameEngine/Game.h"
 #include "PongHUD.h"
@@ -31,6 +32,7 @@ private:
 	int countdown;
 
 	std::string winner;
+	std::stringstream countdownString;
 
 	void runMenuState();
 	void runCountdownState();
