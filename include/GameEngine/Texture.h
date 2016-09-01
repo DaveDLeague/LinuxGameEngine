@@ -10,6 +10,7 @@ public:
 	virtual ~Texture();
 	
 	GLuint getID(){ return textureID; }
+	bool isTransparent(){ return transparent; }
 private:
 	GLuint textureID;
 	bool transparent;

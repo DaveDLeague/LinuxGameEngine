@@ -12,7 +12,7 @@ PongGame::PongGame()
 	startTime = -1;
 	countdown = 5;	
 
-	winner = "";
+	winner = "Player 1";
 		
 
 	currentState = MENU_STATE;
@@ -21,14 +21,17 @@ PongGame::PongGame()
 	paddle = new PongPaddle(100, 300, 50, 200);
 	paddle2 = new PongPaddle2(750, 100, 50, 200);
 	ball = new PongBall(BALL_STARTX, BALL_STARTY, 50, 50);
+	ball->setPaddles(paddle, paddle2);
 	base1 = new PongBase(0, 0, 25, HEIGHT);
 	base2 = new PongBase2(WIDTH - 25, 0, 25, HEIGHT);
 	
 	base1->setHUD(hud);
 	base2->setHUD(hud);
 
-	GameEngine::loadFont("blink", "../LinuxGameEngine/res/fonts/Blink.otf");
-	GameEngine::setFont("blink");
+	GameEngine::loadFont("scar", "../LinuxGameEngine/res/fonts/Dreamscar.ttf");
+	GameEngine::setFont("scar");
+	GameEngine::loadImage("court", "../LinuxGameEngine/res/court.png", false);
+	GameEngine::loadImage("background", "../LinuxGameEngine/res/firevsice.png", true);
 }
 
 PongGame::~PongGame(){
@@ -61,16 +64,20 @@ void PongGame::update(){
 
 void PongGame::runMenuState(){
 	const Uint8* keys = GameEngine::getKeyState();
+	GameEngine::drawImage("background", 0, 0, GameEngine::getCurrentGameWidth(), GameEngine::getCurrentGameHeight());	
 
-	GameEngine::setColor(0, 0, 0);
-	GameEngine::drawText("PARTY   PONG!", 50, 400, 3.0f);
+	GameEngine::setColor(0.7f, 0.1f, 0.1f);
+	GameEngine::drawText("BATTLE   PONG!", 140, 400, 1.0f);
+	GameEngine::drawText("Press START", 300, 200, 0.5f);
 
-	if(keys[GameEngine::ENTER_KEY] || GameEngine::GAMEPAD1_START){
+	if(keys[GameEngine::ENTER_KEY] || GameEngine::GAMEPAD1_START || GameEngine::GAMEPAD2_START){
 		currentState = COUNTDOWN_STATE;
 	}
 }
 
 void PongGame::runCountdownState(){
+	GameEngine::drawImage("court", 0, 0, GameEngine::getCurrentGameWidth(), GameEngine::getCurrentGameHeight());
+
 	ball->draw();
 	paddle->draw();
 	paddle->update();
@@ -79,7 +86,7 @@ void PongGame::runCountdownState(){
 	base1->draw();
 	base2->draw();
 	GameEngine::setColor(0.0f, 0.0f, 0.0f);
-	GameEngine::drawText("GAME     STARTING     IN:", 150, 400, 1.5f);
+	GameEngine::drawText("GAME     STARTING     IN:", 120, 400, 0.75f);
 
 	if(-1 == startTime){ startTime = clock(); }
 	if(clock() - startTime >= CLOCKS_PER_SEC){ 
@@ -88,11 +95,12 @@ void PongGame::runCountdownState(){
 	}
 	
 	countdownString << countdown;
-	GameEngine::drawText(countdownString.str(), 400, 200, 2.5f);
+	GameEngine::drawText(countdownString.str(), 400, 200, 1.0f);
 	countdownString.str("");
 	
 	if(countdown <= 0){ 
 		currentState = GAME_STATE; 
+		ball->setState(ball->BOUNCE_STATE);
 		countdown = 5;
 		startTime = -1;	
 	}
@@ -100,6 +108,8 @@ void PongGame::runCountdownState(){
 }
 
 void PongGame::runGameState(){
+	GameEngine::drawImage("court", 0, 0, GameEngine::getCurrentGameWidth(), GameEngine::getCurrentGameHeight());
+
 	paddle->update();
 	paddle2->update();
 	ball->update();
@@ -115,21 +125,23 @@ void PongGame::runGameState(){
 	hud->draw();
 
 	if(base1->getCurrentStatus() <= 0){
-		winner = "Player      2";
+		winner = "Player 2";
 		currentState = END_STATE;
 	}else if(base2->getCurrentStatus() <= 0){
-		winner = "Player      1";
+		winner = "Player 1";
 		currentState = END_STATE;
 	}
 }
 
 void PongGame::runEndState(){
-	GameEngine::setColor(0, 0, 0);
-	GameEngine::drawText("GAME   OVER!", 100, 400, 3.0f);
-	GameEngine::drawText(winner + "       Wins!", 150, 290, 2.0f);
-	GameEngine::drawText("Press BACK to Restart", 250, 200, 1.0f);
+	const Uint8* keys = GameEngine::getKeyState();
 
-	if(GameEngine::GAMEPAD1_BACK || GameEngine::GAMEPAD2_BACK){
+	GameEngine::setColor(0, 0, 0);
+	GameEngine::drawText("GAME   OVER!", 170, 400, 1.0f);
+	GameEngine::drawText(winner + " Wins!", 210, 290, 0.75f);
+	GameEngine::drawText("Press BACK to Restart", 200, 200, 0.5f);
+
+	if(GameEngine::GAMEPAD1_BACK || GameEngine::GAMEPAD2_BACK || keys[GameEngine::BACKSPACE_KEY]){
 		resetGame();
 		currentState = COUNTDOWN_STATE;
 	}

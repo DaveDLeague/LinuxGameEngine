@@ -7,7 +7,7 @@ TextRenderer::TextRenderer(){
 	shader = new Shader("../LinuxGameEngine/shaders/text_vertex.vs", 
 					   "../LinuxGameEngine/shaders/text_fragment.fs");
 
-	glUseProgram(shader->getProgram());
+	shader->useProgram();
 	colorUniLoc = glGetUniformLocation(shader->getProgram(), "textColor");
 
 	initBuffer();
@@ -31,7 +31,7 @@ void TextRenderer::loadFont(std::string fontName, std::string fontLoc){
     if (FT_New_Face(ft, fontLoc.c_str(), 0, &face))
         std::cout << "ERROR::FREETYPE: Failed to load font" << std::endl;
 
-    FT_Set_Pixel_Sizes(face, 0, 48);
+    FT_Set_Pixel_Sizes(face, 0, 96);
 
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1); 
 
@@ -86,7 +86,10 @@ void TextRenderer::setFont(std::string font){
 }
 
 void TextRenderer::renderText(std::string text, int x, int y, float scale, glm::vec3 color){
-	glUseProgram(shader->getProgram());
+	shader->useProgram();
+	
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);	
 
 	glUniform4f(colorUniLoc, color.x, color.y, color.z, 1.0f);
 
@@ -95,8 +98,7 @@ void TextRenderer::renderText(std::string text, int x, int y, float scale, glm::
 
 	std::string::const_iterator c;
  	for (c = text.begin(); c != text.end(); c++) 
-    {
-		//Character ch = characters[*c];	
+    {	
 		Character ch = fonts[currentFont][*c];	
 
 		GLfloat xpos = x + ch.Bearing.x * scale;
@@ -143,7 +145,7 @@ void TextRenderer::initBuffer(){
 
 void TextRenderer::setDimensions(float w, float h){
 	glm::mat4 projection = glm::ortho(0.0f, w, 0.0f, h);
-	glUseProgram(shader->getProgram());
+	shader->useProgram();
 	GLuint projUniLoc = glGetUniformLocation(shader->getProgram(), "projection");
 	glUniformMatrix4fv(projUniLoc, 1, GL_FALSE, glm::value_ptr(projection));
 }

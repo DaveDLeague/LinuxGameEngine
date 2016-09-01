@@ -2,7 +2,8 @@
 
 PongPaddle2::PongPaddle2(int x, int y, int w, int h):
 PongPaddle(x, y, w, h){
-
+	tag = "paddle2";
+	GameEngine::loadImage("lava", "../LinuxGameEngine/res/lava.png", false);
 }
 
 void PongPaddle2::update(){
@@ -20,14 +21,14 @@ void PongPaddle2::update(){
 	y += speed * -GameEngine::GAMEPAD2_AXIS_LEFT_Y;
 
 	if(y <= 0){ y = 0; }
-	if(y >= GameEngine::getWindowHeight() - h){
-		y = GameEngine::getWindowHeight() - h;
+	if(y >= GameEngine::getCurrentGameHeight() - h){
+		y = GameEngine::getCurrentGameHeight() - h;
 	}
 }
 
 void PongPaddle2::draw(){
-	GameEngine::setColor(0.0f, 1.0f, 0.0f);
-	GameEngine::fillRect(x, y, w, h);
-	//GameEngine::drawImage("planet", x, y, w, h);
+	//GameEngine::setColor(0.0f, 1.0f, 0.0f);
+	//GameEngine::fillRect(x, y, w, h);
+	GameEngine::drawImage("lava", x, y, w, h);
 }
 

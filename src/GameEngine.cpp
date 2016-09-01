@@ -5,6 +5,7 @@
 #include "PongBall.h"
 
 const int GameEngine::ENTER_KEY = SDL_SCANCODE_RETURN;
+const int GameEngine::BACKSPACE_KEY = SDL_SCANCODE_BACKSPACE;
 const int GameEngine::SPACE_KEY = SDL_SCANCODE_SPACE;
 const int GameEngine::UP_KEY = SDL_SCANCODE_UP;
 const int GameEngine::DOWN_KEY = SDL_SCANCODE_DOWN;
@@ -73,6 +74,8 @@ void drawText(std::string text, int x, int y, float scale);
 void loadImage(std::string textureName, std::string textureLoc, bool hasTransparency);
 void loadFont(std::string fontName, std::string fontLoc);
 void setFont(std::string font);
+void setRotationDeg(int d);
+void setRotationRad(float f);
 
 void loadSoundEffect(std::string name, std::string loc);
 void playSoundEffect(std::string effect);
@@ -81,6 +84,8 @@ void playSong(std::string song);
 
 int getWindowWidth();
 int getWindowHeight();
+int getCurrentGameWidth();
+int getCurrentGameHeight();
 
 GameEngine::GameEngine() {
 	deltaTime = 0;	
@@ -120,8 +125,6 @@ void GameEngine::initGLEW(){
 	{
   		fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
 	}
-
-	//fprintf(stdout, "Status: Using GLEW %s\n", glewGetString(GLEW_VERSION));
 }
 
 void GameEngine::initGameControllers(){
@@ -177,16 +180,19 @@ void GameEngine::runGameLoop(){
 		}		
 		while(SDL_PollEvent(&event)){
 			switch(event.type){
-			case SDL_QUIT: 
-				quit = true;
-				break;
-			case SDL_CONTROLLERBUTTONDOWN:
-			case SDL_CONTROLLERBUTTONUP:
-				handleControllerButtonEvent();
-				break;
-			case SDL_CONTROLLERAXISMOTION:
-				handleControllerAxisEvent();
-				break;
+				case SDL_CONTROLLERBUTTONDOWN:
+				case SDL_CONTROLLERBUTTONUP:
+					handleControllerButtonEvent();
+					break;
+				case SDL_CONTROLLERAXISMOTION:
+					handleControllerAxisEvent();
+					break;
+				case SDL_QUIT: 
+					quit = true;
+					break;
+				case SDL_WINDOWEVENT:
+					handleWindowEvent(event);
+					break;
 			}
 		}
 		if(clock() - strt >= refreshTime){
@@ -244,6 +250,31 @@ void GameEngine::handleControllerAxisEvent(){
 	GAMEPAD2_AXIS_LEFT_Y = SDL_GameControllerGetAxis(controller2, SDL_CONTROLLER_AXIS_LEFTY) / 32767.0f;
 	GAMEPAD2_AXIS_RIGHT_X = SDL_GameControllerGetAxis(controller2, SDL_CONTROLLER_AXIS_RIGHTX) / 32767.0f;
 	GAMEPAD2_AXIS_RIGHT_Y = SDL_GameControllerGetAxis(controller2, SDL_CONTROLLER_AXIS_RIGHTY) / 32767.0f;
+}
+
+void GameEngine::handleWindowEvent(SDL_Event e){
+	switch (e.window.event)  {
+		case SDL_WINDOWEVENT_MAXIMIZED:
+		case SDL_WINDOWEVENT_SIZE_CHANGED: 
+		case SDL_WINDOWEVENT_RESIZED:
+			handleWindowResizeEvent();
+			break; 
+	}
+}
+
+void GameEngine::handleWindowResizeEvent(){
+	if(getWindowWidth() >= getWindowHeight()){
+		currentGameHeight = getWindowHeight();
+		currentGameWidth = (int)(((float)currentGameHeight / (float)currentGame->getHeight()) * (float)currentGame->getWidth());
+	}else{
+		currentGameWidth = getWindowWidth();
+		currentGameHeight = (int)(((float)currentGameWidth / (float)currentGame->getWidth()) * (float)currentGame->getHeight());
+	}
+	
+	renderer->setGameWidth(currentGameWidth);
+	renderer->setGameHeight(currentGameHeight);
+
+	glViewport(0, 0, getWindowWidth(), getWindowHeight());
 }
 
 const Uint8* GameEngine::getKeys(){
@@ -325,12 +356,28 @@ void GameEngine::playSong(std::string song){
 	GameEngine::getInstance()->getAudioPlayer()->playSong(song);
 }
 
+void GameEngine::setRotationRad(float f){
+	GameEngine::getInstance()->getRenderer()->setRotationRad(f);
+}
+
+void GameEngine::setRotationDeg(int d){
+	GameEngine::getInstance()->getRenderer()->setRotationDeg(d);
+}
+
 int GameEngine::getWindowWidth(){
 	return GameEngine::getInstance()->getGameWindow()->getWindowWidth();
 }
 
 int GameEngine::getWindowHeight(){
 	return GameEngine::getInstance()->getGameWindow()->getWindowHeight();
+}
+
+int GameEngine::getCurrentGameWidth(){
+	return GameEngine::getInstance()->getGameWidth();
+}
+
+int GameEngine::getCurrentGameHeight(){
+	return GameEngine::getInstance()->getGameHeight();
 }
 
 void GameEngine::initSDL(){

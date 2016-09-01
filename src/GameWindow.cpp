@@ -26,11 +26,9 @@ GameWindow::~GameWindow(){
 }
 
 void GameWindow::refresh(){
-	
 	SDL_GL_SwapWindow(window);
 	
 	glClear(GL_COLOR_BUFFER_BIT);
-	
 }
 
 void GameWindow::setVisible(bool v){

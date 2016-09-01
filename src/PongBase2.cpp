@@ -6,8 +6,9 @@ PongBase(x, y, w, h){
 }
 
 void PongBase2::draw(){
-	GameEngine::setColor(0.0f, 0.75f, 0.0f);
-	GameEngine::fillRect(x, y, w, h);
+	//GameEngine::setColor(0.0f, 0.75f, 0.0f);
+	//GameEngine::fillRect(x, y, w, h);
+	GameEngine::drawImage("magma", x, y, w, h);
 }
 
 void PongBase2::registerHit(){
@@ -23,4 +24,12 @@ void PongBase2::setCurrentStatus(int s){
 void PongBase2::setMaxStatus(int m){
 	maxStatus = m;
 	hud->setP2MaxStatus(maxStatus);
+}
+
+void PongBase2::init(){
+	tag = "base";
+
+	maxStatus = 10;
+	currentStatus = maxStatus;
+	GameEngine::loadImage("magma", "../LinuxGameEngine/res/magma.png", false);
 }

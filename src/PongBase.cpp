@@ -10,8 +10,9 @@ PongBase::~PongBase(){
 }
 
 void PongBase::draw(){
-	GameEngine::setColor(0.0f, 0.0f, 0.75f);
-	GameEngine::fillRect(x, y, w, h);
+	//GameEngine::setColor(0.0f, 0.0f, 0.75f);
+	//GameEngine::fillRect(x, y, w, h);
+	GameEngine::drawImage("ice", x, y, w, h);
 }
 
 void PongBase::registerHit(){
@@ -24,6 +25,7 @@ void PongBase::init(){
 
 	maxStatus = 10;
 	currentStatus = maxStatus;
+	GameEngine::loadImage("ice", "../LinuxGameEngine/res/ice.jpg", false);
 }
 
 void PongBase::setCurrentStatus(int s){

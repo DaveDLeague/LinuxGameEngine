@@ -35,10 +35,9 @@ Renderer::Renderer(GameWindow* win){
 	initRectBuffer();
 	initEllipseBuffer();
 
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
 	loadUniforms();
+
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 Renderer::~Renderer(){
@@ -137,7 +136,7 @@ void Renderer::fillRect(int x, int y, int w, int h){
 	calcTranslate(x, y);
 	calcScale(w, h);
 
-	glUseProgram(shader->getProgram());
+	shader->useProgram();
 
 	glUniformMatrix4fv(transUniform, 1, GL_FALSE, glm::value_ptr(transform));
 	glUniform4f(colorUniform, r, g, b, 1.0f);
@@ -151,9 +150,9 @@ void Renderer::fillRect(int x, int y, int w, int h){
 void Renderer::drawRect(int x, int y, int w, int h){
 	transform = glm::mat4();
 	calcTranslate(x, y);
-	calcScale(w, h);
+	calcScale(w, h);	
 
-	glUseProgram(shader->getProgram());
+	shader->useProgram();
 
 	glUniformMatrix4fv(transUniform, 1, GL_FALSE, glm::value_ptr(transform));
 	glUniform4f(colorUniform, r, g, b, 1.0f);
@@ -170,8 +169,8 @@ void Renderer::fillOval(int x, int y, int w, int h){
 	transform = glm::mat4();
 	calcTranslate(x + (w / 2), y + (h / 2));
 	calcScale(w / 2, h / 2);
-
-	glUseProgram(shader->getProgram());
+	
+	shader->useProgram();
 
 	glUniformMatrix4fv(transUniform, 1, GL_FALSE, glm::value_ptr(transform));
 	glUniform4f(colorUniform, r, g, b, 1.0f);
@@ -184,10 +183,18 @@ void Renderer::fillOval(int x, int y, int w, int h){
 void Renderer::drawImage(std::string imageName, int x, int y, int w, int h){
 	transform = glm::mat4();
 	calcTranslate(x, y);
+	calcRotation();
 	calcScale(w, h);
 	
-	glUseProgram(textureShader->getProgram());
 	
+	textureShader->useProgram();
+	
+	if(textures[imageName]->isTransparent()){
+		glEnable(GL_BLEND);
+	}else{
+		glDisable(GL_BLEND);
+	}
+
 	glBindTexture(GL_TEXTURE_2D, textures[imageName]->getID());
 	glUniformMatrix4fv(texTransUniform, 1, GL_FALSE, glm::value_ptr(transform));
 
@@ -231,16 +238,31 @@ void Renderer::initCrVerts(){
 }
 
 void Renderer::calcScale(int w, int h){
-	float scalex = (float)w / (float)window->getWindowWidth() * 2;
-	float scaley = (float)h / (float)window->getWindowHeight() * 2;
+	float sx = ((float)w / 900.0f * (float)gameWidth) / window->getWindowWidth();
+	float sy = ((float)h / 600.0f * (float)gameHeight) / window->getWindowHeight();
+	//float scalex = (float)w / (float)gameWidth * 2;
+	//float scaley = (float)h / (float)gameHeight * 2;
+
+	float scalex = sx * 2;
+	float scaley = sy * 2;
+
 	transform = glm::scale(transform, glm::vec3(scalex, scaley, 0.0));
 }
 
 void Renderer::calcTranslate(int x, int y){
-	float newX = (((float)x / (float)window->getWindowWidth()) * 2.0) - 1.0;
-	float newY = (((float)y / (float)window->getWindowHeight()) * 2.0) - 1.0;
+	float nx = ((float)x / 900.0f * (float)gameWidth) / (float)window->getWindowWidth();
+	float ny = ((float)y / 600.0f * (float)gameHeight) / (float)window->getWindowHeight();
+	//float newX = (((float)x / (float)gameWidth) * 2.0) - 1.0;
+	//float newY = (((float)y / (float)gameHeight) * 2.0) - 1.0;
+
+	float newX = (nx * 2) - 1.0f;
+	float newY = (ny * 2) - 1.0f;
 
 	transform = glm::translate(transform, glm::vec3(newX, newY, 0.0));
+}
+
+void Renderer::calcRotation(){
+	transform = glm::rotate(transform, rotation, glm::vec3(0, 0, 1));
 }
 
 void Renderer::loadFont(std::string fontName, std::string fontLoc){

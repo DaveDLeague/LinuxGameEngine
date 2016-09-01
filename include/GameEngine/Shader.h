@@ -1,12 +1,4 @@
-/*
- * Shader.h
- *
- *  Created on: Aug 4, 2016
- *      Author: dave
- */
-
-#ifndef SHADER_H_
-#define SHADER_H_
+#pragma once
 
 #include <iostream>
 #include <fstream>
@@ -26,9 +18,10 @@ public:
 		return program;
 	}
 
+	void useProgram();
+
 private:
 
 	GLuint program;
 };
 
-#endif /* SHADER_H_ */

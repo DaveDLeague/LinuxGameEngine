@@ -11,7 +11,7 @@ public:
 	virtual ~Animation();
 
 	void update();
-	void loadImage(std::string file);
+	void loadImage(std::string file, bool t);
 	void setFPS(int f){ fps = f; }
 	void reset(){ currentFrame = 1; }
 	void setCurrentFrame(int f){

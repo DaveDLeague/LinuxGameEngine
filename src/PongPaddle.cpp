@@ -25,20 +25,23 @@ void PongPaddle::update(){
 	y += speed * -GameEngine::GAMEPAD1_AXIS_LEFT_Y;
 
 	if(y <= 0){ y = 0; }
-	if(y >= GameEngine::getWindowHeight() - h){
-		y = GameEngine::getWindowHeight() - h;
+	if(y >= GameEngine::getCurrentGameHeight() - h){
+		y = GameEngine::getCurrentGameHeight() - h;
 	}
 
 }
 
 void PongPaddle::draw(){
-	GameEngine::setColor(0.0f, 0.0f, 1.0f);
-	GameEngine::fillRect(x, y, w, h);
+	//GameEngine::setColor(0.0f, 0.0f, 1.0f);
+	//GameEngine::fillRect(x, y, w, h);
+	GameEngine::drawImage("iceblock", x, y, w, h);
 }
 
 void PongPaddle::init(){
-	tag = "paddle";
+	tag = "paddle1";
 	
 	cbox = new CollisionBox(x, y, w, h);
 	speed = 10;
+
+	GameEngine::loadImage("iceblock", "../LinuxGameEngine/res/iceblock.jpg", false);
 }

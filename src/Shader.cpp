@@ -73,3 +73,6 @@ Shader::~Shader() {
 	glDeleteProgram(program);
 }
 
+void Shader::useProgram(){
+	glUseProgram(program);
+}

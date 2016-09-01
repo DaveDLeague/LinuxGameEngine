@@ -17,7 +17,7 @@ Animation::~Animation(){
 }
 
 void Animation::update(){
-	if(isPaused){ return; }
+	if(isPaused || 0 == fps){ return; }
 
 	if(startTime == -1){ startTime = clock(); }
 	if(clock() - startTime >= CLOCKS_PER_SEC / fps){
@@ -31,9 +31,9 @@ void Animation::update(){
 	currentImageString = frameStream.str();
 }
 
-void Animation::loadImage(std::string file){
+void Animation::loadImage(std::string file, bool t){
 	frameStream.str("");
 	frameStream << "Animation#" << animCtr << "Frame#" << ++frameCount;
 	currentImageString = frameStream.str();
-	GameEngine::loadImage(frameStream.str(), file, true);
+	GameEngine::loadImage(frameStream.str(), file, t);
 }

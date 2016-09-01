@@ -10,4 +10,5 @@ public:
 	void setCurrentStatus(int s);
 	void setMaxStatus(int m);
 private:
+	void init();
 };

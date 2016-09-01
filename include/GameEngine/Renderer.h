@@ -34,7 +34,16 @@ public:
 
 	void setStrokeWidth(int w) { strokeWidth = w; }
 
+	void setGameWidth(int w){ gameWidth = w; }
+	void setGameHeight(int h){ gameHeight = h; }
+	void setRotationRad(float r){ rotation = r; }
+	void setRotationDeg(int d){ rotation = (float)d / 180.0f * 3.141592653589793; }
+
 private:
+	int gameWidth;
+	int gameHeight;
+	float rotation;
+
 	GLuint sqVAO;
 	GLuint sqVBO;
 	GLuint crVAO;
@@ -63,6 +72,7 @@ private:
 	void initCrVerts();
 	void calcScale(int w, int h);
 	void calcTranslate(int x, int y);
+	void calcRotation();
 	void loadUniforms();
 	void initShaders();
 	void initRectBuffer();
